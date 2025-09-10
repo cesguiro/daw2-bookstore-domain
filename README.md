@@ -242,7 +242,3 @@ git clone https://github.com/cesguiro/daw2-bookstore-domain.git
 ```bash
 mvn clean install
 ```
-
-### Licencia
-
-Este proyecto está licenciado bajo la licencia MIT. Para más información, consulta el archivo [LICENSE.md](LICENSE.md).
