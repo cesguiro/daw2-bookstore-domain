@@ -1,4 +1,7 @@
-# Bookstore Domain Layer
+# DAW2 - Bookstore Domain
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Java CI with Maven](
 
 Este proyecto es una implementación de la **capa de dominio** en una arquitectura limpia de una aplicación de ventas de libros online, creada con fines **didácticos** para un ciclo de formación profesional en programación web. En este repositorio encontrarás ejemplos de entidades, repositorios, servicios y mapeadores de la capa de dominio.
 
