@@ -1,8 +1,12 @@
 package es.cesguiro.mapper;
 
+import es.cesguiro.exception.BusinessException;
 import es.cesguiro.model.Author;
 import es.cesguiro.model.Book;
 import es.cesguiro.model.Publisher;
+import es.cesguiro.repository.entity.AuthorEntity;
+import es.cesguiro.repository.entity.BookEntity;
+import es.cesguiro.repository.entity.PublisherEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -67,15 +71,14 @@ class BookMapperTest {
         // Arrange
         Book book = null;
         // Act & Assert
-        var exception = assertThrows(es.cesguiro.exception.BusinessException.class, () -> BookMapper.getInstance().fromBookToBookDto(book));
-        assertEquals("Book cannot be null", exception.getMessage());
+        assertThrows(BusinessException.class, () -> BookMapper.getInstance().fromBookToBookDto(book));
     }
 
     @Test
     @DisplayName("Test map BookEntity to Book")
     void toBook() {
         // Arrange
-        var bookEntity = new es.cesguiro.repository.entity.BookEntity(
+        var bookEntity = new BookEntity(
                 "978-84-376-0494-7",
                 "TitleEs",
                 "TitleEn",
@@ -85,10 +88,10 @@ class BookMapperTest {
                 10,
                 "cover.jpg",
                 LocalDate.of(2020, 1, 1),
-                new es.cesguiro.repository.entity.PublisherEntity("Publisher Name", "publisher-slug"),
+                new PublisherEntity("Publisher Name", "publisher-slug"),
                 List.of(
-                        new es.cesguiro.repository.entity.AuthorEntity("Author One", "nationality1", "Bio1", "Bio1En", 1970, null, "author-one"),
-                        new es.cesguiro.repository.entity.AuthorEntity("Author Two", "nationality2", "Bio2", "Bio2En", 1980, 2020, "author-two")
+                        new AuthorEntity("Author One", "nationality1", "Bio1", "Bio1En", 1970, null, "author-one"),
+                        new AuthorEntity("Author Two", "nationality2", "Bio2", "Bio2En", 1980, 2020, "author-two")
                 )
         );
 

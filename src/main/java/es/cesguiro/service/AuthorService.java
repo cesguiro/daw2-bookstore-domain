@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface AuthorService {
 
-    List<AuthorDto> findAll();
+    List<AuthorDto> getAll();
 
-    AuthorDto findBySlug(String slug);
+    AuthorDto getBySlug(String slug);
 
     AuthorDto create(AuthorDto authorDto);
 

@@ -8,12 +8,12 @@ import java.util.List;
 public class PublisherServiceImpl implements PublisherService {
 
     @Override
-    public List<PublisherDto> findAll() {
+    public List<PublisherDto> getAll() {
         return null;
     }
 
     @Override
-    public PublisherDto findBySlug(String slug) {
+    public PublisherDto getBySlug(String slug) {
         return null;
     }
 

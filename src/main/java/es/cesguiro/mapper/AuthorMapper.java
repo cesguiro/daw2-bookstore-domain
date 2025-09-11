@@ -1,5 +1,6 @@
 package es.cesguiro.mapper;
 
+import es.cesguiro.exception.BusinessException;
 import es.cesguiro.model.Author;
 import es.cesguiro.repository.entity.AuthorEntity;
 import es.cesguiro.service.dto.AuthorDto;
@@ -19,7 +20,7 @@ public class AuthorMapper {
 
     public Author fromAuthorEntityToAuthor(es.cesguiro.repository.entity.AuthorEntity authorEntity) {
         if (authorEntity == null) {
-            throw new es.cesguiro.exception.BusinessException("AuthorEntity cannot be null");
+            throw new BusinessException("AuthorEntity cannot be null");
         }
         return new Author(
                 authorEntity.name(),
@@ -34,7 +35,7 @@ public class AuthorMapper {
 
     public AuthorEntity fromAuthorToAuthorEntity(Author author) {
         if (author == null) {
-            throw new es.cesguiro.exception.BusinessException("Author cannot be null");
+            throw new BusinessException("Author cannot be null");
         }
         return new AuthorEntity(
                 author.getName(),
@@ -49,7 +50,7 @@ public class AuthorMapper {
 
     public AuthorDto fromAuthorToAuthorDto(Author author) {
         if (author == null) {
-            throw new es.cesguiro.exception.BusinessException("Author cannot be null");
+            throw new BusinessException("Author cannot be null");
         }
         return new AuthorDto(
                 author.getName(),
@@ -64,7 +65,7 @@ public class AuthorMapper {
 
     public Author fromAuthorDtoToAuthor(AuthorDto authorDto) {
         if (authorDto == null) {
-            throw new es.cesguiro.exception.BusinessException("AuthorDto cannot be null");
+            throw new BusinessException("AuthorDto cannot be null");
         }
         return new Author(
                 authorDto.name(),

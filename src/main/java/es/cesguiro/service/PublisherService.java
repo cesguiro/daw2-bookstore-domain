@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface PublisherService {
 
-    List<PublisherDto> findAll();
+    List<PublisherDto> getAll();
 
-    PublisherDto findBySlug(String slug);
+    PublisherDto getBySlug(String slug);
 
     PublisherDto create(PublisherDto publisherDto);
 

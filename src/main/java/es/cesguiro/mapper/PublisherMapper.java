@@ -1,5 +1,6 @@
 package es.cesguiro.mapper;
 
+import es.cesguiro.exception.BusinessException;
 import es.cesguiro.model.Publisher;
 import es.cesguiro.repository.entity.PublisherEntity;
 import es.cesguiro.service.dto.PublisherDto;
@@ -20,7 +21,7 @@ public class PublisherMapper {
 
     public Publisher fromPublisherEntityToPublisher(PublisherEntity publisherEntity) {
         if (publisherEntity == null) {
-            throw new es.cesguiro.exception.BusinessException("PublisherEntity cannot be null");
+            throw new BusinessException("PublisherEntity cannot be null");
         }
         return new Publisher(
                 publisherEntity.name(),
@@ -30,7 +31,7 @@ public class PublisherMapper {
 
     public PublisherEntity fromPublisherToPublisherEntity(Publisher publisher) {
         if (publisher == null) {
-            throw new es.cesguiro.exception.BusinessException("Publisher cannot be null");
+            throw new BusinessException("Publisher cannot be null");
         }
         return new PublisherEntity(
                 publisher.getName(),
@@ -40,7 +41,7 @@ public class PublisherMapper {
 
     public PublisherDto fromPublisherToPublisherDto(Publisher publisher) {
         if (publisher == null) {
-            throw new es.cesguiro.exception.BusinessException("Publisher cannot be null");
+            throw new BusinessException("Publisher cannot be null");
         }
         return new PublisherDto(
                 publisher.getName(),
@@ -50,7 +51,7 @@ public class PublisherMapper {
 
     public Publisher fromPublisherDtoToPublisher(PublisherDto publisherDto) {
         if (publisherDto == null) {
-            throw new es.cesguiro.exception.BusinessException("PublisherDto cannot be null");
+            throw new BusinessException("PublisherDto cannot be null");
         }
         return new Publisher(
                 publisherDto.name(),
