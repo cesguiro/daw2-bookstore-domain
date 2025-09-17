@@ -1,5 +1,6 @@
 package es.cesguiro.service.impl;
 
+import es.cesguiro.exception.ResourceNotFoundException;
 import es.cesguiro.mapper.BookMapper;
 import es.cesguiro.service.dto.BookDto;
 import es.cesguiro.exception.BusinessException;
@@ -33,7 +34,7 @@ public class BookServiceImpl implements BookService {
                 .findByIsbn(isbn)
                 .map(BookMapper.getInstance()::fromBookEntityToBook)
                 .map(BookMapper.getInstance()::fromBookToBookDto)
-                .orElseThrow(() -> new BusinessException("Book with isbn " + isbn + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Book with isbn " + isbn + " not found"));
     }
 
     @Override
