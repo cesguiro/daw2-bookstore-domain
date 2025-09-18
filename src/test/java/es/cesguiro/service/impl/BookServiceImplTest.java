@@ -1,6 +1,7 @@
 package es.cesguiro.service.impl;
 
 import es.cesguiro.data.loader.BooksDataLoader;
+import es.cesguiro.exception.ResourceNotFoundException;
 import es.cesguiro.model.Book;
 import es.cesguiro.model.Page;
 import es.cesguiro.repository.BookRepository;
@@ -70,12 +71,52 @@ class BookServiceImplTest {
     }
 
     // test getByIsbn when book exists
+    @Test
+    @DisplayName("getByIsbn should return book when it exists")
+    void getByIsbn_ShouldReturnBook_WhenItExists() {
+        String isbn = books.getFirst().getIsbn();
+        when(bookRepository.findByIsbn(isbn)).thenReturn(java.util.Optional.of(bookEntities.getFirst()));
+        BookDto result = bookServiceImpl.getByIsbn(isbn);
+        BookDto expected = bookDtos.getFirst();
+        assertAll(
+                () -> assertNotNull(result, "Result should not be null"),
+                () -> assertEquals(expected.isbn(), result.isbn(), "ISBN should match"),
+                () -> assertEquals(expected.titleEs(), result.titleEs(), "Title should match")
+        );
+    }
 
     // test getByIsbn when book does not exist
+    @Test
+    @DisplayName("getByIsbn should throw exception when book does not exist")
+    void getByIsbn_ShouldThrowException_WhenBookDoesNotExist() {
+        String isbn = "non-existing-isbn";
+        when(bookRepository.findByIsbn(isbn)).thenReturn(java.util.Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.getByIsbn(isbn));
+    }
 
     // test findByIsbn when book exists
+    @Test
+    @DisplayName("findByIsbn should return book when it exists")
+    void findByIsbn_ShouldReturnBook_WhenItExists() {
+        String isbn = books.getFirst().getIsbn();
+        when(bookRepository.findByIsbn(isbn)).thenReturn(java.util.Optional.of(bookEntities.getFirst()));
+        java.util.Optional<BookDto> result = bookServiceImpl.findByIsbn(isbn);
+        assertAll(
+                () -> assertTrue(result.isPresent(), "Result should be present"),
+                () -> assertEquals(books.getFirst().getIsbn(), result.get().isbn(), "ISBN should match"),
+                () -> assertEquals(books.getFirst().getTitleEs(), result.get().titleEs(), "Title should match")
+        );
+    }
 
     // test findByIsbn when book does not exist
+    @Test
+    @DisplayName("findByIsbn should return empty when book does not exist")
+    void findByIsbn_ShouldReturnEmpty_WhenBookDoesNotExist() {
+        String isbn = "non-existing-isbn";
+        when(bookRepository.findByIsbn(isbn)).thenReturn(java.util.Optional.empty());
+        java.util.Optional<BookDto> result = bookServiceImpl.findByIsbn(isbn);
+        assertFalse(result.isPresent(), "Result should be empty");
+    }
 
     // test create book
 
