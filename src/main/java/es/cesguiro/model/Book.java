@@ -1,8 +1,11 @@
 package es.cesguiro.model;
 
+import es.cesguiro.exception.BusinessException;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Book {
@@ -124,6 +127,9 @@ public class Book {
     }
 
     public BigDecimal calculateFinalPrice() {
+        if (discountPercentage < 0 || discountPercentage > 100) {
+            return basePrice.setScale(2, RoundingMode.HALF_UP);
+        }
         BigDecimal discount = basePrice
                 .multiply(BigDecimal.valueOf(discountPercentage))
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
@@ -148,6 +154,12 @@ public class Book {
     }
 
     public void addAuthor(Author author) {
+        if (this.authors == null) {
+            authors = new ArrayList<>();
+        }
+        if (this.authors.contains(author)) {
+            throw  new BusinessException("Author already exists");
+        }
         this.authors.add(author);
     }
 

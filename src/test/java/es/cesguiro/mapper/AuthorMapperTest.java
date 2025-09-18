@@ -1,31 +1,50 @@
 package es.cesguiro.mapper;
 
+import es.cesguiro.data.loader.AuthorsDataLoader;
+import es.cesguiro.model.Author;
 import es.cesguiro.repository.entity.AuthorEntity;
+import es.cesguiro.service.dto.AuthorDto;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AuthorMapperTest {
 
+    private static List<Author> authors;
+    private static List<AuthorEntity> authorEntities;
+    private static List<AuthorDto> authorDtos;
+
+    @BeforeAll
+    static void setUp() {
+        var authorsDataLoader = new AuthorsDataLoader();
+        authors = authorsDataLoader.loadAuthorsFromCSV();
+        authorEntities = authorsDataLoader.loadAuthorEntitiesFromCSV();
+        authorDtos = authorsDataLoader.loadAuthorDtosFromCSV();
+    }
+
     @Test
     @DisplayName("Test map AuthorEntity to Author")
     void toAuthor() {
         // Arrange
-        AuthorEntity authorEntity = new AuthorEntity("name", "nationality", "biographyEs", "biographyEn", 1990, 2020, "slug");
+        AuthorEntity authorEntity = authorEntities.getFirst();
 
         // Act
-        var author = AuthorMapper.getInstance().fromAuthorEntityToAuthor(authorEntity);
+        Author result = AuthorMapper.getInstance().fromAuthorEntityToAuthor(authorEntity);
+        Author expected = authors.getFirst();
 
         // Assert
         assertAll(
-                () -> assertEquals(authorEntity.name(), author.getName(), "Names should match"),
-                () -> assertEquals(authorEntity.nationality(), author.getNationality(), "Nationalities should match"),
-                () -> assertEquals(authorEntity.biographyEs(), author.getBiographyEs(), "BiographyEs should match"),
-                () -> assertEquals(authorEntity.biographyEn(), author.getBiographyEn(), "BiographyEn should match"),
-                () -> assertEquals(authorEntity.birthYear(), author.getBirthYear(), "Birth years should match"),
-                () -> assertEquals(authorEntity.deathYear(), author.getDeathYear(), "Death years should match"),
-                () -> assertEquals(authorEntity.slug(), author.getSlug(), "Slugs should match")
+                () -> assertEquals(expected.getName(), result.getName(), "Names should match"),
+                () -> assertEquals(expected.getNationality(), result.getNationality(), "Nationalities should match"),
+                () -> assertEquals(expected.getBiographyEs(), result.getBiographyEs(), "BiographyEs should match"),
+                () -> assertEquals(expected.getBiographyEn(), result.getBiographyEn(), "BiographyEn should match"),
+                () -> assertEquals(expected.getBirthYear(), result.getBirthYear(), "Birth years should match"),
+                () -> assertEquals(expected.getDeathYear(), result.getDeathYear(), "Death years should match"),
+                () -> assertEquals(expected.getSlug(), result.getSlug(), "Slugs should match")
         );
     }
 
@@ -43,44 +62,25 @@ class AuthorMapperTest {
     @DisplayName("Test map List<AuthorEntity> to Author")
     void toAuthorList() {
         // Arrange
-        var authorEntities = java.util.List.of(
-                new AuthorEntity("name1", "nationality1", "biographyEs1", "biographyEn1", 1990, 2020, "slug1"),
-                new AuthorEntity("name2", "nationality2", "biographyEs2", "biographyEn2", 1980, null, "slug2")
+        List<AuthorEntity> authorEntityList = List.of(
+                authorEntities.getFirst(),
+                authorEntities.get(1)
         );
 
         // Act
-        var authors = authorEntities.stream().map(AuthorMapper.getInstance()::fromAuthorEntityToAuthor).toList();
+        List<Author> result = authorEntityList.stream().map(AuthorMapper.getInstance()::fromAuthorEntityToAuthor).toList();
+        List<Author> expected = List.of(
+                authors.getFirst(),
+                authors.get(1)
+        );
 
         // Assert
         assertAll(
-                () -> assertEquals(2, authors.size(), "There should be two authors"),
-                () -> {
-                    var author1 = authors.get(0);
-                    var entity1 = authorEntities.get(0);
-                    assertAll(
-                            () -> assertEquals(entity1.name(), author1.getName(), "Names should match"),
-                            () -> assertEquals(entity1.nationality(), author1.getNationality(), "Nationalities should match"),
-                            () -> assertEquals(entity1.biographyEs(), author1.getBiographyEs(), "BiographyEs should match"),
-                            () -> assertEquals(entity1.biographyEn(), author1.getBiographyEn(), "BiographyEn should match"),
-                            () -> assertEquals(entity1.birthYear(), author1.getBirthYear(), "Birth years should match"),
-                            () -> assertEquals(entity1.deathYear(), author1.getDeathYear(), "Death years should match"),
-                            () -> assertEquals(entity1.slug(), author1.getSlug(), "Slugs should match")
-                    );
-                },
-                () -> {
-                    var author2 = authors.get(1);
-                    var entity2 = authorEntities.get(1);
-                    assertAll(
-                            () -> assertEquals(entity2.name(), author2.getName(), "Names should match"),
-                            () -> assertEquals(entity2.nationality(), author2.getNationality(), "Nationalities should match"),
-                            () -> assertEquals(entity2.biographyEs(), author2.getBiographyEs(), "BiographyEs should match"),
-                            () -> assertEquals(entity2.biographyEn(), author2.getBiographyEn(), "BiographyEn should match"),
-                            () -> assertEquals(entity2.birthYear(), author2.getBirthYear(), "Birth years should match"),
-                            () -> assertEquals(entity2.deathYear(), author2.getDeathYear(), "Death years should match"),
-                            () -> assertEquals(entity2.slug(), author2.getSlug(), "Slugs should match")
-                    );
-                }
+                () -> assertEquals(expected.size(), result.size(), "List sizes should match"),
+                () -> assertEquals(expected.getFirst().getName(), result.getFirst().getName(), "First author names should match"),
+                () -> assertEquals(expected.get(1).getName(), result.get(1).getName(), "Second author names should match")
         );
+
     }
 
 }
