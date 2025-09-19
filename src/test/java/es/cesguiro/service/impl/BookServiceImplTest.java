@@ -1,12 +1,13 @@
 package es.cesguiro.service.impl;
 
 import es.cesguiro.data.loader.BooksDataLoader;
-import es.cesguiro.exception.ResourceNotFoundException;
-import es.cesguiro.model.Book;
-import es.cesguiro.model.Page;
-import es.cesguiro.repository.BookRepository;
-import es.cesguiro.repository.entity.BookEntity;
-import es.cesguiro.service.dto.BookDto;
+import es.cesguiro.domain.exception.ResourceNotFoundException;
+import es.cesguiro.domain.model.Book;
+import es.cesguiro.domain.model.Page;
+import es.cesguiro.domain.repository.BookRepository;
+import es.cesguiro.domain.repository.entity.BookEntity;
+import es.cesguiro.domain.service.dto.BookDto;
+import es.cesguiro.domain.service.impl.BookServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

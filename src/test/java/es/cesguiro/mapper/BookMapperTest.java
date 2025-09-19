@@ -1,21 +1,15 @@
 package es.cesguiro.mapper;
 
-import es.cesguiro.data.loader.AuthorsDataLoader;
 import es.cesguiro.data.loader.BooksDataLoader;
-import es.cesguiro.exception.BusinessException;
-import es.cesguiro.model.Author;
-import es.cesguiro.model.Book;
-import es.cesguiro.model.Publisher;
-import es.cesguiro.repository.entity.AuthorEntity;
-import es.cesguiro.repository.entity.BookEntity;
-import es.cesguiro.repository.entity.PublisherEntity;
-import es.cesguiro.service.dto.BookDto;
+import es.cesguiro.domain.exception.BusinessException;
+import es.cesguiro.domain.mapper.BookMapper;
+import es.cesguiro.domain.model.Book;
+import es.cesguiro.domain.repository.entity.BookEntity;
+import es.cesguiro.domain.service.dto.BookDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -2,8 +2,9 @@ package es.cesguiro.model;
 
 import es.cesguiro.data.loader.AuthorsDataLoader;
 import es.cesguiro.data.loader.BooksDataLoader;
-import es.cesguiro.exception.BusinessException;
-import es.cesguiro.mapper.BookMapper;
+import es.cesguiro.domain.exception.BusinessException;
+import es.cesguiro.domain.model.Author;
+import es.cesguiro.domain.model.Book;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 

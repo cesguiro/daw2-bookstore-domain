@@ -1,9 +1,9 @@
 package es.cesguiro.data.loader;
 
 import es.cesguiro.data.mapper.AuthorMapper;
-import es.cesguiro.model.Author;
-import es.cesguiro.repository.entity.AuthorEntity;
-import es.cesguiro.service.dto.AuthorDto;
+import es.cesguiro.domain.model.Author;
+import es.cesguiro.domain.repository.entity.AuthorEntity;
+import es.cesguiro.domain.service.dto.AuthorDto;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.List;

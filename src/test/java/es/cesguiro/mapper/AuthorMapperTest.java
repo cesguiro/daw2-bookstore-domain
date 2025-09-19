@@ -1,9 +1,11 @@
 package es.cesguiro.mapper;
 
 import es.cesguiro.data.loader.AuthorsDataLoader;
-import es.cesguiro.model.Author;
-import es.cesguiro.repository.entity.AuthorEntity;
-import es.cesguiro.service.dto.AuthorDto;
+import es.cesguiro.domain.exception.BusinessException;
+import es.cesguiro.domain.mapper.AuthorMapper;
+import es.cesguiro.domain.model.Author;
+import es.cesguiro.domain.repository.entity.AuthorEntity;
+import es.cesguiro.domain.service.dto.AuthorDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +56,7 @@ class AuthorMapperTest {
         // Arrange
         AuthorEntity authorEntity = null;
         // Act & Assert
-        var exception = assertThrows(es.cesguiro.exception.BusinessException.class, () -> AuthorMapper.getInstance().fromAuthorEntityToAuthor(authorEntity));
+        var exception = assertThrows(BusinessException.class, () -> AuthorMapper.getInstance().fromAuthorEntityToAuthor(authorEntity));
         assertEquals("AuthorEntity cannot be null", exception.getMessage());
     }
 

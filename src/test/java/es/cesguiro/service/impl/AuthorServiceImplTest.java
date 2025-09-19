@@ -1,7 +1,8 @@
 package es.cesguiro.service.impl;
 
-import es.cesguiro.repository.AuthorRepository;
-import es.cesguiro.service.dto.AuthorDto;
+import es.cesguiro.domain.repository.AuthorRepository;
+import es.cesguiro.domain.service.dto.AuthorDto;
+import es.cesguiro.domain.service.impl.AuthorServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

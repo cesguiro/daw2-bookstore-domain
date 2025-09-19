@@ -1,9 +1,9 @@
 package es.cesguiro.data.loader;
 
 import es.cesguiro.data.mapper.PublisherMapper;
-import es.cesguiro.model.Publisher;
-import es.cesguiro.repository.entity.PublisherEntity;
-import es.cesguiro.service.dto.PublisherDto;
+import es.cesguiro.domain.model.Publisher;
+import es.cesguiro.domain.repository.entity.PublisherEntity;
+import es.cesguiro.domain.service.dto.PublisherDto;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.List;

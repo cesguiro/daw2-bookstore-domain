@@ -1,9 +1,9 @@
 package es.cesguiro.data.loader;
 
 import es.cesguiro.data.mapper.BookMapper;
-import es.cesguiro.model.Book;
-import es.cesguiro.repository.entity.BookEntity;
-import es.cesguiro.service.dto.BookDto;
+import es.cesguiro.domain.model.Book;
+import es.cesguiro.domain.repository.entity.BookEntity;
+import es.cesguiro.domain.service.dto.BookDto;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.List;

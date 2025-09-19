@@ -1,8 +1,8 @@
 package es.cesguiro.data.mapper;
 
-import es.cesguiro.model.Publisher;
-import es.cesguiro.repository.entity.PublisherEntity;
-import es.cesguiro.service.dto.PublisherDto;
+import es.cesguiro.domain.model.Publisher;
+import es.cesguiro.domain.repository.entity.PublisherEntity;
+import es.cesguiro.domain.service.dto.PublisherDto;
 import org.apache.commons.csv.CSVRecord;
 
 public class PublisherMapper extends BaseMapper {
