@@ -38,15 +38,15 @@ public class BookMapper extends BaseMapper{
             authorRecords = authorCsvRecords.stream().map(AuthorMapper::toAuthorDto).collect(Collectors.toCollection(ArrayList::new));;
         }
         return new BookDto(
-                csvRecord.get("isbn"),
-                csvRecord.get("title_es"),
-                csvRecord.get("title_en"),
-                csvRecord.get("synopsis_es"),
-                csvRecord.get("synopsis_en"),
-                new BigDecimal(csvRecord.get("base_price")),
-                Double.parseDouble(csvRecord.get("discount_percentage")),
-                new BigDecimal(csvRecord.get("price")),
-                csvRecord.get("cover"),
+                parseString(csvRecord.get("isbn")),
+                parseString(csvRecord.get("title_es")),
+                parseString(csvRecord.get("title_en")),
+                parseString(csvRecord.get("synopsis_es")),
+                parseString(csvRecord.get("synopsis_en")),
+                parseBigDecimal(csvRecord.get("base_price")),
+                parseDouble(csvRecord.get("discount_percentage")),
+                parseBigDecimal(csvRecord.get("price")),
+                parseString(csvRecord.get("cover")),
                 parseDate(csvRecord.get("publication_date")),
                 publisherRecord,
                 authorRecords
@@ -65,20 +65,19 @@ public class BookMapper extends BaseMapper{
         } else {
             authors = authorCsvRecords.stream().map(AuthorMapper::toAuthor).collect(Collectors.toCollection(ArrayList::new));;
         }
-        Book book = new Book(
-                csvRecord.get("isbn"),
-                csvRecord.get("title_es"),
-                csvRecord.get("title_en"),
-                csvRecord.get("synopsis_es"),
-                csvRecord.get("synopsis_en"),
-                new BigDecimal(csvRecord.get("base_price")),
-                Double.parseDouble(csvRecord.get("discount_percentage")),
-                csvRecord.get("cover"),
+        return new Book(
+                parseString(csvRecord.get("isbn")),
+                parseString(csvRecord.get("title_es")),
+                parseString(csvRecord.get("title_en")),
+                parseString(csvRecord.get("synopsis_es")),
+                parseString(csvRecord.get("synopsis_en")),
+                parseBigDecimal(csvRecord.get("base_price")),
+                parseDouble(csvRecord.get("discount_percentage")),
+                parseString(csvRecord.get("cover")),
                 parseDate(csvRecord.get("publication_date")),
                 publisher,
                 authors
         );
-        return book;
     }
 
     public static BookEntity toBookEntity(CSVRecord csvRecord) {
@@ -93,20 +92,19 @@ public class BookMapper extends BaseMapper{
         } else {
             authors = authorCsvRecords.stream().map(AuthorMapper::toAuthorEntity).collect(Collectors.toCollection(ArrayList::new));;
         }
-        BookEntity bookEntity = new BookEntity(
-                csvRecord.get("isbn"),
-                csvRecord.get("title_es"),
-                csvRecord.get("title_en"),
-                csvRecord.get("synopsis_es"),
-                csvRecord.get("synopsis_en"),
-                new BigDecimal(csvRecord.get("base_price")),
-                Double.parseDouble(csvRecord.get("discount_percentage")),
-                csvRecord.get("cover"),
+        return new BookEntity(
+                parseString(csvRecord.get("isbn")),
+                parseString(csvRecord.get("title_es")),
+                parseString(csvRecord.get("title_en")),
+                parseString(csvRecord.get("synopsis_es")),
+                parseString(csvRecord.get("synopsis_en")),
+                parseBigDecimal(csvRecord.get("base_price")),
+                parseDouble(csvRecord.get("discount_percentage")),
+                parseString(csvRecord.get("cover")),
                 parseDate(csvRecord.get("publication_date")),
                 publisher,
                 authors
         );
-        return bookEntity;
     }
 
 

@@ -127,9 +127,14 @@ public class Book {
     }
 
     public BigDecimal calculateFinalPrice() {
+        if( basePrice == null ) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        }
+
         if (discountPercentage < 0 || discountPercentage > 100) {
             return basePrice.setScale(2, RoundingMode.HALF_UP);
         }
+
         BigDecimal discount = basePrice
                 .multiply(BigDecimal.valueOf(discountPercentage))
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);

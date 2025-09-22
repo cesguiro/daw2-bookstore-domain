@@ -1,5 +1,6 @@
 package es.cesguiro.data.mapper;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -16,5 +17,26 @@ public class BaseMapper {
             return null;
         }
         return Integer.parseInt(value);
+    }
+
+    protected static BigDecimal parseBigDecimal(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        return new BigDecimal(value);
+    }
+
+    protected static Double parseDouble(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        return Double.parseDouble(value);
+    }
+
+    protected static String parseString(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        return value.trim();
     }
 }

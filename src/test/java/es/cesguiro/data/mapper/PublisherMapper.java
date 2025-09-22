@@ -12,8 +12,8 @@ public class PublisherMapper extends BaseMapper {
             return null;
         }
         return new PublisherDto(
-                csvRecord.get("name"),
-                csvRecord.get("slug")
+                parseString(csvRecord.get("name")),
+                parseString(csvRecord.get("slug"))
         );
     }
 
@@ -22,8 +22,8 @@ public class PublisherMapper extends BaseMapper {
             return null;
         }
         return new Publisher(
-                csvRecord.get("name"),
-                csvRecord.get("slug")
+                parseString(csvRecord.get("name")),
+                parseString(csvRecord.get("slug"))
         );
     }
 
@@ -32,8 +32,8 @@ public class PublisherMapper extends BaseMapper {
             return null;
         }
         return new PublisherEntity(
-                csvRecord.get("name"),
-                csvRecord.get("slug")
+                parseString(csvRecord.get("name")),
+                parseString(csvRecord.get("slug"))
         );
     }
 }

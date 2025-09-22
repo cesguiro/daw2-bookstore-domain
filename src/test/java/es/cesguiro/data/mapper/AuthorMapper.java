@@ -12,13 +12,13 @@ public class AuthorMapper extends BaseMapper {
             return null;
         }
         return new AuthorDto(
-                csvRecord.get("name"),
-                csvRecord.get("nationality"),
-                csvRecord.get("biography_es"),
-                csvRecord.get("biography_en"),
-                Integer.parseInt(csvRecord.get("birth_year")),
-                parseInt(csvRecord.get("death_year")) != null ? Integer.parseInt(csvRecord.get("death_year")) : 0,
-                csvRecord.get("slug")
+                parseString(csvRecord.get("name")),
+                parseString(csvRecord.get("nationality")),
+                parseString(csvRecord.get("biography_es")),
+                parseString(csvRecord.get("biography_en")),
+                parseInt(csvRecord.get("birth_year")),
+                parseInt(csvRecord.get("death_year")),
+                parseString(csvRecord.get("slug"))
         );
     }
 
@@ -27,13 +27,13 @@ public class AuthorMapper extends BaseMapper {
             return null;
         }
         return new Author(
-                csvRecord.get("name"),
-                csvRecord.get("nationality"),
-                csvRecord.get("biography_es"),
-                csvRecord.get("biography_en"),
-                Integer.parseInt(csvRecord.get("birth_year")),
-                parseInt(csvRecord.get("death_year")) != null ? Integer.parseInt(csvRecord.get("death_year")) : 0,
-                csvRecord.get("slug")
+                parseString(csvRecord.get("name")),
+                parseString(csvRecord.get("nationality")),
+                parseString(csvRecord.get("biography_es")),
+                parseString(csvRecord.get("biography_en")),
+                parseInt(csvRecord.get("birth_year")),
+                parseInt(csvRecord.get("death_year")),
+                parseString(csvRecord.get("slug"))
         );
     }
 
@@ -42,13 +42,13 @@ public class AuthorMapper extends BaseMapper {
             return null;
         }
         return new AuthorEntity(
-                csvRecord.get("name"),
-                csvRecord.get("nationality"),
-                csvRecord.get("biography_es"),
-                csvRecord.get("biography_en"),
-                Integer.parseInt(csvRecord.get("birth_year")),
-                parseInt(csvRecord.get("death_year")) != null ? Integer.parseInt(csvRecord.get("death_year")) : 0,
-                csvRecord.get("slug")
+                parseString(csvRecord.get("name")),
+                parseString(csvRecord.get("nationality")),
+                parseString(csvRecord.get("biography_es")),
+                parseString(csvRecord.get("biography_en")),
+                parseInt(csvRecord.get("birth_year")),
+                parseInt(csvRecord.get("death_year")),
+                parseString(csvRecord.get("slug"))
         );
     }
 

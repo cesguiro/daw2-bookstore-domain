@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,6 +96,7 @@ class BookServiceImplTest {
         assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.getByIsbn(isbn));
     }
 
+
     // test findByIsbn when book exists
     @Test
     @DisplayName("findByIsbn should return book when it exists")
@@ -117,6 +119,23 @@ class BookServiceImplTest {
         when(bookRepository.findByIsbn(isbn)).thenReturn(java.util.Optional.empty());
         java.util.Optional<BookDto> result = bookServiceImpl.findByIsbn(isbn);
         assertFalse(result.isPresent(), "Result should be empty");
+    }
+
+    @Test
+    @DisplayName("findByIsbn with null publisher should return book when it exists")
+    void findByIsbn_WithNullPublisher_ShouldReturnBook_WhenItExists() {
+        Book bookWithNullPublisher = books.get(28);
+        BookEntity bookEntityWithNullPublisher = bookEntities.get(28);
+        BookDto bookDtoWithNullPublisher = bookDtos.get(28);
+
+        when(bookRepository.findByIsbn("5555555555555")).thenReturn(Optional.of(bookEntityWithNullPublisher));
+        Optional<BookDto> result = bookServiceImpl.findByIsbn("5555555555555");
+        assertAll(
+                () -> assertTrue(result.isPresent(), "Result should be present"),
+                () -> assertEquals(bookDtoWithNullPublisher.isbn(), result.get().isbn(), "ISBN should match"),
+                () -> assertEquals(bookDtoWithNullPublisher.titleEs(), result.get().titleEs(), "Title should match"),
+                () -> assertNull(result.get().publisher(), "Publisher should be null")
+        );
     }
 
     // test create book
