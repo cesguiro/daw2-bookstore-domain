@@ -51,13 +51,9 @@ class AuthorMapperTest {
     }
 
     @Test
-    @DisplayName("Test map null AuthorEntity to Author throws BusinessException")
-    void toAuthor_NullAuthorEntity_ThrowsBusinessException() {
-        // Arrange
-        AuthorEntity authorEntity = null;
-        // Act & Assert
-        var exception = assertThrows(BusinessException.class, () -> AuthorMapper.getInstance().fromAuthorEntityToAuthor(authorEntity));
-        assertEquals("AuthorEntity cannot be null", exception.getMessage());
+    @DisplayName("Test map null AuthorEntity to Author")
+    void toAuthor_NullAuthorEntity() {
+        assertNull(AuthorMapper.getInstance().fromAuthorEntityToAuthor(null), "Mapping null AuthorEntity should return null Author");
     }
 
     @Test

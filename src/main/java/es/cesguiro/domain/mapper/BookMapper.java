@@ -2,8 +2,12 @@ package es.cesguiro.domain.mapper;
 
 import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.model.Book;
+import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.repository.entity.BookEntity;
+import es.cesguiro.domain.service.dto.AuthorDto;
 import es.cesguiro.domain.service.dto.BookDto;
+
+import java.util.List;
 
 public class BookMapper {
 
@@ -21,9 +25,9 @@ public class BookMapper {
 
     public Book fromBookEntityToBook(BookEntity bookEntity) {
         if (bookEntity == null) {
-            throw new BusinessException("BookEntity cannot be null");
+            return null;
         }
-        return new Book(
+        Book book = new Book(
                 bookEntity.isbn(),
                 bookEntity.titleEs(),
                 bookEntity.titleEn(),
@@ -34,13 +38,21 @@ public class BookMapper {
                 bookEntity.cover(),
                 bookEntity.publicationDate(),
                 PublisherMapper.getInstance().fromPublisherEntityToPublisher(bookEntity.publisher()),
-                bookEntity.authors().stream().map(AuthorMapper.getInstance()::fromAuthorEntityToAuthor).toList()
+                null
         );
+        if (bookEntity.authors() != null && !bookEntity.authors().isEmpty()) {
+            book.setAuthors(bookEntity.authors().stream().map(AuthorMapper.getInstance()::fromAuthorEntityToAuthor).toList());
+        }
+        return book;
     }
 
     public BookEntity fromBookToBookEntity(Book book) {
         if (book == null) {
-            throw new BusinessException("Book cannot be null");
+            return null;
+        }
+        List<AuthorEntity> authors = null;
+        if (book.getAuthors() != null && !book.getAuthors().isEmpty()) {
+            authors = book.getAuthors().stream().map(AuthorMapper.getInstance()::fromAuthorToAuthorEntity).toList();
         }
         return new BookEntity(
                 book.getIsbn(),
@@ -53,13 +65,17 @@ public class BookMapper {
                 book.getCover(),
                 book.getPublicationDate(),
                 PublisherMapper.getInstance().fromPublisherToPublisherEntity(book.getPublisher()),
-                book.getAuthors().stream().map(AuthorMapper.getInstance()::fromAuthorToAuthorEntity).toList()
+                authors
         );
     }
 
     public BookDto fromBookToBookDto(Book book) {
         if (book == null) {
-            throw new BusinessException("Book cannot be null");
+            return null;
+        }
+        List<AuthorDto> authors = null;
+        if (book.getAuthors() != null && !book.getAuthors().isEmpty()) {
+            authors = book.getAuthors().stream().map(AuthorMapper.getInstance()::fromAuthorToAuthorDto).toList();
         }
         return new BookDto(
                 book.getIsbn(),
@@ -73,16 +89,17 @@ public class BookMapper {
                 book.getCover(),
                 book.getPublicationDate(),
                 PublisherMapper.getInstance().fromPublisherToPublisherDto(book.getPublisher()),
-                book.getAuthors().stream().map(AuthorMapper.getInstance()::fromAuthorToAuthorDto).toList()
+                authors
         );
     }
 
 
     public Book fromBookDtoToBook(BookDto bookDto) {
         if (bookDto == null) {
-            throw new BusinessException("BookDto cannot be null");
+            return null;
         }
-        return new Book(
+
+        Book book = new Book(
                 bookDto.isbn(),
                 bookDto.titleEs(),
                 bookDto.titleEn(),
@@ -93,7 +110,11 @@ public class BookMapper {
                 bookDto.cover(),
                 bookDto.publicationDate(),
                 PublisherMapper.getInstance().fromPublisherDtoToPublisher(bookDto.publisher()),
-                bookDto.authors().stream().map(AuthorMapper.getInstance()::fromAuthorDtoToAuthor).toList()
+                null
         );
+        if (bookDto.authors() != null && !bookDto.authors().isEmpty()) {
+            book.setAuthors(bookDto.authors().stream().map(AuthorMapper.getInstance()::fromAuthorDtoToAuthor).toList());
+        }
+        return book;
     }
 }

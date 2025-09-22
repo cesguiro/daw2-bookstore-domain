@@ -28,10 +28,9 @@ public class BookMapper extends BaseMapper{
         if (csvRecord == null) {
             return null;
         }
-        long id = Long.parseLong(csvRecord.get("id"));
-        PublisherDto publisherRecord = PublisherMapper.toPublisherDto(getPublisherCsvRecord(Long.parseLong(csvRecord.get("publisher_id"))));
+        PublisherDto publisherRecord = PublisherMapper.toPublisherDto(getPublisherCsvRecord(parseLong(csvRecord.get("publisher_id"))));
         List<AuthorDto> authorRecords;
-        List<CSVRecord> authorCsvRecords = getAuthorCsvRecords(id);
+        List<CSVRecord> authorCsvRecords = getAuthorCsvRecords(parseLong(csvRecord.get("id")));
         if(authorCsvRecords == null) {
             authorRecords = null;
         } else {
@@ -57,8 +56,8 @@ public class BookMapper extends BaseMapper{
         if (csvRecord == null) {
             return null;
         }
-        Publisher publisher = PublisherMapper.toPublisher(getPublisherCsvRecord(Long.parseLong(csvRecord.get("publisher_id"))));
-        List<CSVRecord> authorCsvRecords = getAuthorCsvRecords(Long.parseLong(csvRecord.get("id")));
+        Publisher publisher = PublisherMapper.toPublisher(getPublisherCsvRecord(parseLong(csvRecord.get("publisher_id"))));
+        List<CSVRecord> authorCsvRecords = getAuthorCsvRecords(parseLong(csvRecord.get("id")));
         List<Author> authors;
         if(authorCsvRecords == null) {
             authors = null;
@@ -84,8 +83,8 @@ public class BookMapper extends BaseMapper{
         if (csvRecord == null) {
             return null;
         }
-        PublisherEntity publisher = PublisherMapper.toPublisherEntity(getPublisherCsvRecord(Long.parseLong(csvRecord.get("publisher_id"))));
-        List<CSVRecord> authorCsvRecords = getAuthorCsvRecords(Long.parseLong(csvRecord.get("id")));
+        PublisherEntity publisher = PublisherMapper.toPublisherEntity(getPublisherCsvRecord(parseLong(csvRecord.get("publisher_id"))));
+        List<CSVRecord> authorCsvRecords = getAuthorCsvRecords(parseLong(csvRecord.get("id")));
         List<AuthorEntity> authors;
         if(authorCsvRecords == null) {
             authors = null;
@@ -109,6 +108,9 @@ public class BookMapper extends BaseMapper{
 
 
     private static CSVRecord getPublisherCsvRecord(Long id) {
+        if (id == null) {
+            return null;
+        }
         return publishersDataLoader.findCsvRecordById(id).orElse(null);
     }
 

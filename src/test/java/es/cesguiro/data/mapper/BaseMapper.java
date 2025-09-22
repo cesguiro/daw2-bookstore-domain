@@ -39,4 +39,11 @@ public class BaseMapper {
         }
         return value.trim();
     }
+
+    protected static Long parseLong(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        return Long.parseLong(value);
+    }
 }

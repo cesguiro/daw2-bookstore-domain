@@ -56,12 +56,9 @@ class BookMapperTest {
     }
 
     @Test
-    @DisplayName("Test map null Book to BookDto throws BusinessException")
-    void toBookDto_NullBook_ThrowsBusinessException() {
-        // Arrange
-        Book book = null;
-        // Act & Assert
-        assertThrows(BusinessException.class, () -> BookMapper.getInstance().fromBookToBookDto(book));
+    @DisplayName("Test map null Book to BookDto")
+    void toBookDto_NullBook() {
+        assertNull(BookMapper.getInstance().fromBookToBookDto(null), "Mapping null Book should return null BookDto");
     }
 
     @Test
