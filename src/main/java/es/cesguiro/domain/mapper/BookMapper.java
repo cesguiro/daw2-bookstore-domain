@@ -2,12 +2,14 @@ package es.cesguiro.domain.mapper;
 
 import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.exception.ValidationException;
+import es.cesguiro.domain.model.Author;
 import es.cesguiro.domain.model.Book;
 import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.repository.entity.BookEntity;
 import es.cesguiro.domain.service.dto.AuthorDto;
 import es.cesguiro.domain.service.dto.BookDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookMapper {
@@ -28,8 +30,13 @@ public class BookMapper {
         if (bookEntity == null) {
             return null;
         }
+        List<Author> authors = new ArrayList<>();
+        if (bookEntity.authors() != null && !bookEntity.authors().isEmpty()) {
+            authors = bookEntity.authors().stream().map(AuthorMapper.getInstance()::fromAuthorEntityToAuthor).toList();
+        }
         try {
-            Book book = new Book(
+            return new Book(
+                    bookEntity.id(),
                     bookEntity.isbn(),
                     bookEntity.titleEs(),
                     bookEntity.titleEn(),
@@ -40,12 +47,8 @@ public class BookMapper {
                     bookEntity.cover(),
                     bookEntity.publicationDate(),
                     PublisherMapper.getInstance().fromPublisherEntityToPublisher(bookEntity.publisher()),
-                    null
+                    authors
             );
-            if (bookEntity.authors() != null && !bookEntity.authors().isEmpty()) {
-                book.setAuthors(bookEntity.authors().stream().map(AuthorMapper.getInstance()::fromAuthorEntityToAuthor).toList());
-            }
-            return book;
         } catch (ValidationException e) {
             //Añadir al log
             return null;
@@ -62,6 +65,7 @@ public class BookMapper {
             authors = book.getAuthors().stream().map(AuthorMapper.getInstance()::fromAuthorToAuthorEntity).toList();
         }
         return new BookEntity(
+                book.getId(),
                 book.getIsbn(),
                 book.getTitleEs(),
                 book.getTitleEn(),
@@ -85,6 +89,7 @@ public class BookMapper {
             authors = book.getAuthors().stream().map(AuthorMapper.getInstance()::fromAuthorToAuthorDto).toList();
         }
         return new BookDto(
+                book.getId(),
                 book.getIsbn(),
                 book.getTitleEs(),
                 book.getTitleEn(),
@@ -107,6 +112,7 @@ public class BookMapper {
         }
 
         Book book = new Book(
+                bookDto.id(),
                 bookDto.isbn(),
                 bookDto.titleEs(),
                 bookDto.titleEn(),

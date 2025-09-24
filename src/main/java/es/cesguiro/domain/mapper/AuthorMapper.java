@@ -23,6 +23,7 @@ public class AuthorMapper {
             return null;
         }
         return new Author(
+                authorEntity.id(),
                 authorEntity.name(),
                 authorEntity.nationality(),
                 authorEntity.biographyEs(),
@@ -38,6 +39,7 @@ public class AuthorMapper {
             return null;
         }
         return new AuthorEntity(
+                author.getId(),
                 author.getName(),
                 author.getNationality(),
                 author.getBiographyEs(),
@@ -53,6 +55,7 @@ public class AuthorMapper {
             return null;
         }
         return new AuthorDto(
+                author.getId(),
                 author.getName(),
                 author.getNationality(),
                 author.getBiographyEs(),
@@ -68,6 +71,7 @@ public class AuthorMapper {
             return null;
         }
         return new Author(
+                authorDto.id(),
                 authorDto.name(),
                 authorDto.nationality(),
                 authorDto.biographyEs(),

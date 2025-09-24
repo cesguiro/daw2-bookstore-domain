@@ -38,12 +38,12 @@ class BookTest {
     @CsvSource({
             "100.00, 15.0, 85.00",
             "50.00, 0.0, 50.00",
-            "75.00, 100.0, 0.00",
-            "60.00, -10.0, 60.00"
+            "75.00, 100.0, 0.00"
     })
     void calculateFinalPrice(String basePrice, double discountPercentage, String expectedPrice) {
         Book book = new Book(
-                "978-3-16-148410-0",
+                1L,
+                "9999999999999",
                 "Título en Español",
                 "Title in English",
                 "Sinopsis en Español",

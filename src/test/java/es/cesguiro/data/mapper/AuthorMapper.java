@@ -12,6 +12,7 @@ public class AuthorMapper extends BaseMapper {
             return null;
         }
         return new AuthorDto(
+                parseLong(csvRecord.get("id")),
                 parseString(csvRecord.get("name")),
                 parseString(csvRecord.get("nationality")),
                 parseString(csvRecord.get("biography_es")),
@@ -27,6 +28,7 @@ public class AuthorMapper extends BaseMapper {
             return null;
         }
         return new Author(
+                parseLong(csvRecord.get("id")),
                 parseString(csvRecord.get("name")),
                 parseString(csvRecord.get("nationality")),
                 parseString(csvRecord.get("biography_es")),
@@ -42,6 +44,7 @@ public class AuthorMapper extends BaseMapper {
             return null;
         }
         return new AuthorEntity(
+                parseLong(csvRecord.get("id")),
                 parseString(csvRecord.get("name")),
                 parseString(csvRecord.get("nationality")),
                 parseString(csvRecord.get("biography_es")),

@@ -2,9 +2,11 @@ package es.cesguiro.domain.service.impl;
 
 import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.exception.ResourceNotFoundException;
+import es.cesguiro.domain.exception.ValidationException;
 import es.cesguiro.domain.mapper.BookMapper;
 import es.cesguiro.domain.model.Book;
 import es.cesguiro.domain.model.Page;
+import es.cesguiro.domain.repository.PublisherRepository;
 import es.cesguiro.domain.repository.entity.BookEntity;
 import es.cesguiro.domain.service.dto.BookDto;
 import es.cesguiro.domain.repository.BookRepository;
@@ -16,9 +18,11 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final PublisherRepository publisherRepository;
 
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository, PublisherRepository publisherRepository) {
         this.bookRepository = bookRepository;
+        this.publisherRepository = publisherRepository;
     }
 
     @Override
@@ -66,6 +70,10 @@ public class BookServiceImpl implements BookService {
                 BookMapper.getInstance().fromBookDtoToBook(bookDto)
         );
 
+        if(bookDto.publisher() != null  &&
+                publisherRepository.findById(bookDto.publisher().id()).isEmpty()) {
+            throw new ResourceNotFoundException("Publisher with id " + bookDto.publisher().id() + " does not exist");
+        }
         return BookMapper.getInstance().fromBookToBookDto(
                 BookMapper.getInstance().fromBookEntityToBook(
                         bookRepository.save(newBookEntity)

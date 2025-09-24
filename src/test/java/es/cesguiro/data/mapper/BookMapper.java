@@ -37,6 +37,7 @@ public class BookMapper extends BaseMapper{
             authorRecords = authorCsvRecords.stream().map(AuthorMapper::toAuthorDto).collect(Collectors.toCollection(ArrayList::new));;
         }
         return new BookDto(
+                parseLong(csvRecord.get("id")),
                 parseString(csvRecord.get("isbn")),
                 parseString(csvRecord.get("title_es")),
                 parseString(csvRecord.get("title_en")),
@@ -65,6 +66,7 @@ public class BookMapper extends BaseMapper{
             authors = authorCsvRecords.stream().map(AuthorMapper::toAuthor).collect(Collectors.toCollection(ArrayList::new));;
         }
         return new Book(
+                parseLong(csvRecord.get("id")),
                 parseString(csvRecord.get("isbn")),
                 parseString(csvRecord.get("title_es")),
                 parseString(csvRecord.get("title_en")),
@@ -92,6 +94,7 @@ public class BookMapper extends BaseMapper{
             authors = authorCsvRecords.stream().map(AuthorMapper::toAuthorEntity).collect(Collectors.toCollection(ArrayList::new));;
         }
         return new BookEntity(
+                parseLong(csvRecord.get("id")),
                 parseString(csvRecord.get("isbn")),
                 parseString(csvRecord.get("title_es")),
                 parseString(csvRecord.get("title_en")),

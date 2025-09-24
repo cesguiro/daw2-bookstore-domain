@@ -5,11 +5,14 @@ import es.cesguiro.data.loader.BooksDataLoader;
 import es.cesguiro.data.loader.PublishersDataLoader;
 import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.exception.ResourceNotFoundException;
+import es.cesguiro.domain.exception.ValidationException;
 import es.cesguiro.domain.model.Author;
 import es.cesguiro.domain.model.Book;
 import es.cesguiro.domain.model.Page;
 import es.cesguiro.domain.model.Publisher;
+import es.cesguiro.domain.repository.AuthorRepository;
 import es.cesguiro.domain.repository.BookRepository;
+import es.cesguiro.domain.repository.PublisherRepository;
 import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.repository.entity.BookEntity;
 import es.cesguiro.domain.repository.entity.PublisherEntity;
@@ -40,13 +43,23 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BookServiceImplTest {
 
+    @Mock
+    private BookRepository bookRepository;
+
+    @Mock
+    private AuthorRepository authorRepository;
+
+    @Mock
+    private PublisherRepository publisherRepository;
+
+    @InjectMocks
+    private BookServiceImpl bookServiceImpl;
+
     private static List<Book> books;
     private static List<BookEntity> bookEntities;
     private static List<BookDto> bookDtos;
-    private static List<Author> authors;
     private static List<AuthorEntity> authorEntities;
     private static List<AuthorDto> authorDtos;
-    private static List<Publisher> publishers;
     private static List<PublisherEntity> publisherEntities;
     private static List<PublisherDto> publisherDtos;
 
@@ -59,19 +72,11 @@ class BookServiceImplTest {
         books = booksDataLoader.loadBooksFromCSV();
         bookEntities = booksDataLoader.loadBookEntitiesFromCSV();
         bookDtos = booksDataLoader.loadBookDtosFromCSV();
-        authors = authorsDataLoader.loadAuthorsFromCSV();
         authorEntities = authorsDataLoader.loadAuthorEntitiesFromCSV();
         authorDtos = authorsDataLoader.loadAuthorDtosFromCSV();
-        publishers = publishersDataLoader.loadPublishersFromCSV();
         publisherEntities = publishersDataLoader.loadPublisherEntitiesFromCSV();
         publisherDtos = publishersDataLoader.loadPublisherDtosFromCSV();
     }
-
-    @Mock
-    private BookRepository bookRepository;
-
-    @InjectMocks
-    private BookServiceImpl bookServiceImpl;
 
     static Stream<Arguments> provideFindAllArguments() {
         return Stream.of(
@@ -150,7 +155,6 @@ class BookServiceImplTest {
     @Test
     @DisplayName("findByIsbn with null publisher should return book when it exists")
     void findByIsbn_WithNullPublisher_ShouldReturnBook_WhenItExists() {
-        Book bookWithNullPublisher = books.get(28);
         BookEntity bookEntityWithNullPublisher = bookEntities.get(28);
         BookDto bookDtoWithNullPublisher = bookDtos.get(28);
 
@@ -164,11 +168,28 @@ class BookServiceImplTest {
         );
     }
 
+    @Test
+    @DisplayName("findByIsbn with null authors should return book when it exists")
+    void findByIsbn_WithNullAuthors_ShouldReturnBook_WhenItExists() {
+        BookEntity bookEntityWithNullAuthors = bookEntities.get(24);
+        BookDto bookDtoWithNullAuthors = bookDtos.get(24);
+
+        when(bookRepository.findByIsbn("6666666666666")).thenReturn(Optional.of(bookEntityWithNullAuthors));
+        Optional<BookDto> result = bookServiceImpl.findByIsbn("6666666666666");
+        assertAll(
+                () -> assertTrue(result.isPresent(), "Result should be present"),
+                () -> assertEquals(bookDtoWithNullAuthors.isbn(), result.get().isbn(), "ISBN should match"),
+                () -> assertEquals(bookDtoWithNullAuthors.titleEs(), result.get().titleEs(), "Title should match"),
+                () -> assertNull(result.get().authors(), "Authors should not be null")
+        );
+    }
+
     // test create book
     @Test
     @DisplayName("createBook should create a new book")
     void createBook_ShouldCreateNewBook() {
         BookDto newBookDto = new BookDto(
+                null,
                 "9999999999999",
                 "New Book Title ES",
                 "New Book Title EN",
@@ -184,6 +205,7 @@ class BookServiceImplTest {
         );
 
         BookEntity newBookEntity = new BookEntity(
+                null,
                 "9999999999999",
                 "New Book Title ES",
                 "New Book Title EN",
@@ -197,7 +219,23 @@ class BookServiceImplTest {
                 List.of(authorEntities.getFirst(), authorEntities.get(1))
         );
 
-        when(bookRepository.save(newBookEntity)).thenReturn(newBookEntity);
+        BookEntity bookEntityCreated = new BookEntity(
+                30L,
+                "9999999999999",
+                "New Book Title ES",
+                "New Book Title EN",
+                "New Book Synopsis ES",
+                "New Book Synopsis EN",
+                new BigDecimal("29.99"),
+                0.0,
+                "http://example.com/newbookcover.jpg",
+                LocalDate.of(2024,1,1),
+                publisherEntities.getFirst(),
+                List.of(authorEntities.getFirst(), authorEntities.get(1))
+        );
+
+        when(bookRepository.save(newBookEntity)).thenReturn(bookEntityCreated);
+        when(publisherRepository.findById(1L)).thenReturn(Optional.of(publisherEntities.getFirst()));
 
         BookDto createdBook = bookServiceImpl.create(newBookDto);
 
@@ -223,8 +261,10 @@ class BookServiceImplTest {
     static Stream<Arguments> provideInvalidDataArguments() {
         return Stream.of(
                 Arguments.of("", new BigDecimal("10.00"), 5.0),
+                Arguments.of("123", new BigDecimal("10.00"), 5.0),
                 Arguments.of("9999999999999", new BigDecimal("-10.00"), 5.0),
-                Arguments.of("9999999999999", new BigDecimal("10.00"), -5.0)
+                Arguments.of("9999999999999", new BigDecimal("10.00"), -5.0),
+                Arguments.of("9999999999999", new BigDecimal("10.00"), 105.0)
         );
     }
 
@@ -234,6 +274,7 @@ class BookServiceImplTest {
     @DisplayName("createBook should throw exception when data is invalid")
     void createBook_ShouldThrowException_WhenDataIsInvalid(String isbn, BigDecimal basePrice, double discount) {
         BookDto invalidBookDto = new BookDto(
+                null,
                 isbn, // empty ISBN
                 "Book Title ES",
                 "Book Title EN",
@@ -248,11 +289,35 @@ class BookServiceImplTest {
                 List.of(authorDtos.getFirst())
         );
 
-        assertThrows(BusinessException.class, () -> bookServiceImpl.create(invalidBookDto));
+        assertThrows(ValidationException.class, () -> bookServiceImpl.create(invalidBookDto));
     }
 
-    // test create book with non-existing authors
+    // test create book with non-existing publisher
+    @Test
+    @DisplayName("createBook should throw exception when publisher does not exist")
+    void createBook_ShouldThrowException_WhenPublisherDoesNotExist() {
+        PublisherDto nonExistingPublisher = new PublisherDto(99L, "Non existing Publisher", "non-existing-publisher");
+          BookDto bookDtoWithNonExistingPublisher = new BookDto(
+                null,
+                "9999999999999",
+                "Book Title ES",
+                "Book Title EN",
+                "Book Synopsis ES",
+                "Book Synopsis EN",
+                new BigDecimal("19.99"),
+                10.0,
+                null,
+                "http://example.com/bookcover.jpg",
+                LocalDate.of(2024,1,1),
+                nonExistingPublisher,
+                List.of(authorDtos.getFirst())
+        );
 
-    // .....
+        when(bookRepository.findByIsbn(bookDtoWithNonExistingPublisher.isbn())).thenReturn(Optional.empty());
+        when(publisherRepository.findById(nonExistingPublisher.id())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.create(bookDtoWithNonExistingPublisher));
+    }
+
 
 }
