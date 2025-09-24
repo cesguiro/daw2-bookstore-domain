@@ -1,6 +1,7 @@
 package es.cesguiro.domain.mapper;
 
 import es.cesguiro.domain.exception.BusinessException;
+import es.cesguiro.domain.exception.ValidationException;
 import es.cesguiro.domain.model.Book;
 import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.repository.entity.BookEntity;
@@ -27,23 +28,29 @@ public class BookMapper {
         if (bookEntity == null) {
             return null;
         }
-        Book book = new Book(
-                bookEntity.isbn(),
-                bookEntity.titleEs(),
-                bookEntity.titleEn(),
-                bookEntity.synopsisEs(),
-                bookEntity.synopsisEn(),
-                bookEntity.basePrice(),
-                bookEntity.discountPercentage(),
-                bookEntity.cover(),
-                bookEntity.publicationDate(),
-                PublisherMapper.getInstance().fromPublisherEntityToPublisher(bookEntity.publisher()),
-                null
-        );
-        if (bookEntity.authors() != null && !bookEntity.authors().isEmpty()) {
-            book.setAuthors(bookEntity.authors().stream().map(AuthorMapper.getInstance()::fromAuthorEntityToAuthor).toList());
+        try {
+            Book book = new Book(
+                    bookEntity.isbn(),
+                    bookEntity.titleEs(),
+                    bookEntity.titleEn(),
+                    bookEntity.synopsisEs(),
+                    bookEntity.synopsisEn(),
+                    bookEntity.basePrice(),
+                    bookEntity.discountPercentage(),
+                    bookEntity.cover(),
+                    bookEntity.publicationDate(),
+                    PublisherMapper.getInstance().fromPublisherEntityToPublisher(bookEntity.publisher()),
+                    null
+            );
+            if (bookEntity.authors() != null && !bookEntity.authors().isEmpty()) {
+                book.setAuthors(bookEntity.authors().stream().map(AuthorMapper.getInstance()::fromAuthorEntityToAuthor).toList());
+            }
+            return book;
+        } catch (ValidationException e) {
+            //Añadir al log
+            return null;
         }
-        return book;
+
     }
 
     public BookEntity fromBookToBookEntity(Book book) {

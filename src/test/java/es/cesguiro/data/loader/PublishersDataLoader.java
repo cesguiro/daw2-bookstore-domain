@@ -31,7 +31,7 @@ public class PublishersDataLoader extends ResourceDataLoader {
                 .toList();
     }
 
-    public List<PublisherEntity> loadPublishersEntitiesFromCSV() {
+    public List<PublisherEntity> loadPublisherEntitiesFromCSV() {
         return publisherRawRecords
                 .stream()
                 .map(PublisherMapper::toPublisherEntity)

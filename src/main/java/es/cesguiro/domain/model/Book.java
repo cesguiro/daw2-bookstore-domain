@@ -1,6 +1,7 @@
 package es.cesguiro.domain.model;
 
 import es.cesguiro.domain.exception.BusinessException;
+import es.cesguiro.domain.exception.ValidationException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -36,6 +37,12 @@ public class Book {
             Publisher publisher,
             List<Author> authors
     ) {
+        if(isbn == null || isbn.isBlank() ) {
+            throw new ValidationException("ISBN is required" );
+        }
+        if(!isbn.matches("\\d{13}")) {
+            throw new ValidationException("ISBN must be 13 digits" );
+        }
         this.isbn = isbn;
         this.titleEs = titleEs;
         this.titleEn = titleEn;
@@ -166,6 +173,11 @@ public class Book {
             throw  new BusinessException("Author already exists");
         }
         this.authors.add(author);
+    }
+
+    public boolean validate() {
+
+        return true;
     }
 
 }

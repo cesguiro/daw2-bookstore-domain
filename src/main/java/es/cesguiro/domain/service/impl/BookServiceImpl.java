@@ -1,7 +1,9 @@
 package es.cesguiro.domain.service.impl;
 
+import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.exception.ResourceNotFoundException;
 import es.cesguiro.domain.mapper.BookMapper;
+import es.cesguiro.domain.model.Book;
 import es.cesguiro.domain.model.Page;
 import es.cesguiro.domain.repository.entity.BookEntity;
 import es.cesguiro.domain.service.dto.BookDto;
@@ -54,7 +56,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto create(BookDto bookDto) {
-        return null;
+        Optional<BookDto> existingBookDto = findByIsbn(bookDto.isbn());
+
+        if (existingBookDto.isPresent()) {
+            throw new BusinessException("Book with isbn " + bookDto.isbn() + " already exists");
+        }
+
+        BookEntity newBookEntity = BookMapper.getInstance().fromBookToBookEntity(
+                BookMapper.getInstance().fromBookDtoToBook(bookDto)
+        );
+
+        return BookMapper.getInstance().fromBookToBookDto(
+                BookMapper.getInstance().fromBookEntityToBook(
+                        bookRepository.save(newBookEntity)
+                )
+        );
     }
 
     @Override
