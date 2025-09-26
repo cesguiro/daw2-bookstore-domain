@@ -1,4 +1,4 @@
-package es.cesguiro.domain.validation;
+package es.cesguiro.domain.validation.manual_validator;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

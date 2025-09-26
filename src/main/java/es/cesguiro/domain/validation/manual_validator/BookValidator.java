@@ -1,4 +1,4 @@
-package es.cesguiro.domain.validation;
+package es.cesguiro.domain.validation.manual_validator;
 
 import es.cesguiro.domain.service.dto.BookDto;
 
