@@ -1,4 +1,4 @@
-package es.cesguiro.mapper;
+package es.cesguiro.domain.mapper;
 
 import es.cesguiro.data.loader.BooksDataLoader;
 import es.cesguiro.domain.exception.BusinessException;

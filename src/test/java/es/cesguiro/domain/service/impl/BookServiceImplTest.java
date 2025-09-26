@@ -1,4 +1,4 @@
-package es.cesguiro.service.impl;
+package es.cesguiro.domain.service.impl;
 
 import es.cesguiro.data.loader.AuthorsDataLoader;
 import es.cesguiro.data.loader.BooksDataLoader;
@@ -6,10 +6,8 @@ import es.cesguiro.data.loader.PublishersDataLoader;
 import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.exception.ResourceNotFoundException;
 import es.cesguiro.domain.exception.ValidationException;
-import es.cesguiro.domain.model.Author;
 import es.cesguiro.domain.model.Book;
 import es.cesguiro.domain.model.Page;
-import es.cesguiro.domain.model.Publisher;
 import es.cesguiro.domain.repository.AuthorRepository;
 import es.cesguiro.domain.repository.BookRepository;
 import es.cesguiro.domain.repository.PublisherRepository;
@@ -19,7 +17,6 @@ import es.cesguiro.domain.repository.entity.PublisherEntity;
 import es.cesguiro.domain.service.dto.AuthorDto;
 import es.cesguiro.domain.service.dto.BookDto;
 import es.cesguiro.domain.service.dto.PublisherDto;
-import es.cesguiro.domain.service.impl.BookServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

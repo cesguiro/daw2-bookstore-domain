@@ -1,4 +1,4 @@
-package es.cesguiro.model;
+package es.cesguiro.domain.model;
 
 import es.cesguiro.data.loader.AuthorsDataLoader;
 import es.cesguiro.data.loader.BooksDataLoader;
