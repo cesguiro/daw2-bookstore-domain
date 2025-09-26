@@ -1,11 +1,20 @@
 package es.cesguiro.domain.service.impl;
 
+import es.cesguiro.domain.mapper.PublisherMapper;
+import es.cesguiro.domain.repository.PublisherRepository;
+import es.cesguiro.domain.repository.entity.PublisherEntity;
 import es.cesguiro.domain.service.dto.PublisherDto;
 import es.cesguiro.domain.service.PublisherService;
 
 import java.util.List;
 
 public class PublisherServiceImpl implements PublisherService {
+
+    private final PublisherRepository publisherRepository;
+
+    public PublisherServiceImpl(PublisherRepository publisherRepository) {
+        this.publisherRepository = publisherRepository;
+    }
 
     @Override
     public List<PublisherDto> getAll() {
@@ -24,7 +33,14 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Override
     public PublisherDto update(PublisherDto publisherDto) {
-        return null;
+        PublisherEntity updatedPublisher = publisherRepository.save(
+                PublisherMapper.getInstance().fromPublisherToPublisherEntity(
+                    PublisherMapper.getInstance().fromPublisherDtoToPublisher(publisherDto)
+                )
+        );
+        return PublisherMapper.getInstance().fromPublisherToPublisherDto(
+                PublisherMapper.getInstance().fromPublisherEntityToPublisher(updatedPublisher)
+        );
     }
 
     @Override

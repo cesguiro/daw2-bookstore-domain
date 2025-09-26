@@ -147,8 +147,8 @@ class BookServiceImplTest {
     @DisplayName("findByIsbn should return empty when book does not exist")
     void findByIsbn_ShouldReturnEmpty_WhenBookDoesNotExist() {
         String isbn = "non-existing-isbn";
-        when(bookRepository.findByIsbn(isbn)).thenReturn(java.util.Optional.empty());
-        java.util.Optional<BookDto> result = bookServiceImpl.findByIsbn(isbn);
+        when(bookRepository.findByIsbn(isbn)).thenReturn(Optional.empty());
+        Optional<BookDto> result = bookServiceImpl.findByIsbn(isbn);
         assertFalse(result.isPresent(), "Result should be empty");
     }
 

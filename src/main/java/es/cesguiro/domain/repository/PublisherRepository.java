@@ -8,4 +8,5 @@ public interface PublisherRepository {
 
     Optional<PublisherEntity> findById(Long id);
     Optional<PublisherEntity> findBySlug(String slug);
+    PublisherEntity save(PublisherEntity publisherEntity);
 }
