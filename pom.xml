@@ -43,9 +43,17 @@
         <org.apache.maven.surefire.plugin.version>3.5.2</org.apache.maven.surefire.plugin.version>
         <org.apache.maven.compiler.plugin.version>3.14.0</org.apache.maven.compiler.plugin.version>
         <org.apache.commons.csv.version>1.13.0</org.apache.commons.csv.version>
+        <jakarta.validation.version>3.1.1</jakarta.validation.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.validation.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
