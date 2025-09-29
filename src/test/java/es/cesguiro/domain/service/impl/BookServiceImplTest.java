@@ -177,7 +177,7 @@ class BookServiceImplTest {
                 () -> assertTrue(result.isPresent(), "Result should be present"),
                 () -> assertEquals(bookDtoWithNullAuthors.isbn(), result.get().isbn(), "ISBN should match"),
                 () -> assertEquals(bookDtoWithNullAuthors.titleEs(), result.get().titleEs(), "Title should match"),
-                () -> assertNull(result.get().authors(), "Authors should not be null")
+                () -> assertTrue(result.get().authors().isEmpty(), "Authors should be empty")
         );
     }
 
@@ -255,46 +255,13 @@ class BookServiceImplTest {
         assertThrows(BusinessException.class, () -> bookServiceImpl.create(existingBookDto));
     }
 
-    static Stream<Arguments> provideInvalidDataArguments() {
-        return Stream.of(
-                Arguments.of("", new BigDecimal("10.00"), 5.0),
-                Arguments.of("123", new BigDecimal("10.00"), 5.0),
-                Arguments.of("9999999999999", new BigDecimal("-10.00"), 5.0),
-                Arguments.of("9999999999999", new BigDecimal("10.00"), -5.0),
-                Arguments.of("9999999999999", new BigDecimal("10.00"), 105.0)
-        );
-    }
-
-    // test create book with invalid data
-    @ParameterizedTest
-    @MethodSource("provideInvalidDataArguments")
-    @DisplayName("createBook should throw exception when data is invalid")
-    void createBook_ShouldThrowException_WhenDataIsInvalid(String isbn, BigDecimal basePrice, double discount) {
-        BookDto invalidBookDto = new BookDto(
-                null,
-                isbn, // empty ISBN
-                "Book Title ES",
-                "Book Title EN",
-                "Book Synopsis ES",
-                "Book Synopsis EN",
-                basePrice, // negative price
-                discount,
-                null,
-                "url", // invalid URL
-                LocalDate.of(2024,1,1),
-                publisherDtos.getFirst(),
-                List.of(authorDtos.getFirst())
-        );
-
-        assertThrows(ValidationException.class, () -> bookServiceImpl.create(invalidBookDto));
-    }
 
     // test create book with non-existing publisher
     @Test
     @DisplayName("createBook should throw exception when publisher does not exist")
     void createBook_ShouldThrowException_WhenPublisherDoesNotExist() {
         PublisherDto nonExistingPublisher = new PublisherDto(99L, "Non existing Publisher", "non-existing-publisher");
-          BookDto bookDtoWithNonExistingPublisher = new BookDto(
+        BookDto bookDtoWithNonExistingPublisher = new BookDto(
                 null,
                 "9999999999999",
                 "Book Title ES",

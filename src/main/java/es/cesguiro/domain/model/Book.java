@@ -8,20 +8,21 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Book {
 
-    private Long id;
-    private String isbn;
-    private String titleEs;
-    private String titleEn;
-    private String synopsisEs;
-    private String synopsisEn;
-    private BigDecimal basePrice;
-    private double discountPercentage;
-    private BigDecimal price;
-    private String cover;
-    private LocalDate publicationDate;
+    private final Long id;
+    private final String isbn;
+    private final String titleEs;
+    private final String titleEn;
+    private final String synopsisEs;
+    private final String synopsisEn;
+    private final BigDecimal basePrice;
+    private final double discountPercentage;
+    private final BigDecimal price;
+    private final String cover;
+    private final LocalDate publicationDate;
     private Publisher publisher;
     private List<Author> authors;
 
@@ -39,21 +40,6 @@ public class Book {
             Publisher publisher,
             List<Author> authors
     ) {
-        if(isbn == null || isbn.isBlank() ) {
-            throw new ValidationException("ISBN is required" );
-        }
-        if(!isbn.matches("\\d{13}")) {
-            throw new ValidationException("ISBN must be 13 digits" );
-        }
-        if(basePrice == null ) {
-            basePrice = BigDecimal.ZERO;
-        }
-        if(basePrice.compareTo(BigDecimal.ZERO) < 0 ) {
-            throw new ValidationException("Base price must be greater or equals than zero" );
-        }
-        if(discountPercentage < 0 || discountPercentage > 100 ) {
-            throw new ValidationException("Discount percentage must be between 0 and 100" );
-        }
         this.id = id;
         this.isbn = isbn;
         this.titleEs = titleEs;
@@ -66,7 +52,7 @@ public class Book {
         this.cover = cover;
         this.publicationDate = publicationDate;
         this.publisher = publisher;
-        this.authors = authors;
+        this.authors = (authors == null) ? new ArrayList<>() : new ArrayList<>(authors);
     }
 
     public Long getId() {
@@ -127,10 +113,6 @@ public class Book {
             return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
         }
 
-        if (discountPercentage < 0 || discountPercentage > 100) {
-            return basePrice.setScale(2, RoundingMode.HALF_UP);
-        }
-
         BigDecimal discount = basePrice
                 .multiply(BigDecimal.valueOf(discountPercentage))
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
@@ -155,18 +137,11 @@ public class Book {
     }
 
     public void addAuthor(Author author) {
-        if (this.authors == null) {
-            authors = new ArrayList<>();
-        }
         if (this.authors.contains(author)) {
             throw  new BusinessException("Author already exists");
         }
         this.authors.add(author);
     }
 
-    public boolean validate() {
-
-        return true;
-    }
 
 }

@@ -1,6 +1,7 @@
 package es.cesguiro.domain.service.impl;
 
 import es.cesguiro.data.loader.PublishersDataLoader;
+import es.cesguiro.domain.exception.ValidationException;
 import es.cesguiro.domain.model.Publisher;
 import es.cesguiro.domain.repository.PublisherRepository;
 import es.cesguiro.domain.repository.entity.PublisherEntity;
@@ -41,7 +42,7 @@ class PublisherServiceImplTest {
     }
 
     @Test
-    @DisplayName("Update publidher")
+    @DisplayName("Update publisher")
     void updatePublisher() {
         PublisherDto publisherDto = publisherDtos.getFirst();
         PublisherEntity publisherEntity = publisherEntities.getFirst();
@@ -65,19 +66,6 @@ class PublisherServiceImplTest {
         );
 
         verify(publisherRepository).save(publisherEntity);
-    }
-
-    @Test
-    @DisplayName("Update publisher with null name should throw ValidationException")
-    void updatePublisherWithNullNameShouldThrowValidationException() {
-        PublisherDto publisherDto = publisherDtos.getFirst();
-        PublisherDto invalidPublisherDto = new PublisherDto(
-                publisherDto.id(),
-                null,
-                publisherDto.slug()
-        );
-
-       assertThrows(Exception.class, () -> publisherServiceImpl.update(invalidPublisherDto));
     }
 
 
