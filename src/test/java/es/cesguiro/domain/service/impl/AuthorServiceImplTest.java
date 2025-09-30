@@ -39,7 +39,7 @@ class AuthorServiceImplTest {
         );
 
         // Mock repository behavior
-        when(authorRepository.create(Mockito.any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(authorRepository.save(Mockito.any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
         AuthorDto createdAuthorDto = authorServiceImpl.create(authorDto);

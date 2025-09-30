@@ -31,7 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorDto create(AuthorDto authorDto) {
         Author author = AuthorMapper.getInstance().fromAuthorDtoToAuthor(authorDto);
         AuthorEntity authorEntity = AuthorMapper.getInstance().fromAuthorToAuthorEntity(author);
-        AuthorEntity newAuthorEntity = authorRepository.create(authorEntity);
+        AuthorEntity newAuthorEntity = authorRepository.save(authorEntity);
         Author newAuthor = AuthorMapper.getInstance().fromAuthorEntityToAuthor(newAuthorEntity);
         return AuthorMapper.getInstance().fromAuthorToAuthorDto(newAuthor);
     }
