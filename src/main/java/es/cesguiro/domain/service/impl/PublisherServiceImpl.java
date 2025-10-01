@@ -1,5 +1,6 @@
 package es.cesguiro.domain.service.impl;
 
+import es.cesguiro.domain.exception.ResourceNotFoundException;
 import es.cesguiro.domain.mapper.PublisherMapper;
 import es.cesguiro.domain.repository.PublisherRepository;
 import es.cesguiro.domain.repository.entity.PublisherEntity;
@@ -23,7 +24,10 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Override
     public PublisherDto getBySlug(String slug) {
-        return null;
+        return publisherRepository.findBySlug(slug)
+                .map(PublisherMapper.getInstance()::fromPublisherEntityToPublisher)
+                .map(PublisherMapper.getInstance()::fromPublisherToPublisherDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Publisher with slug " + slug + " not found"));
     }
 
     @Override
