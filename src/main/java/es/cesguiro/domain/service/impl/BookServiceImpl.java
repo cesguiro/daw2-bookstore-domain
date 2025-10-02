@@ -12,6 +12,7 @@ import es.cesguiro.domain.repository.entity.BookEntity;
 import es.cesguiro.domain.service.dto.BookDto;
 import es.cesguiro.domain.repository.BookRepository;
 import es.cesguiro.domain.service.BookService;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +63,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookDto create(BookDto bookDto) {
         Optional<BookDto> existingBookDto = findByIsbn(bookDto.isbn());
 
