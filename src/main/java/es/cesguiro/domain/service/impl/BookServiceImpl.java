@@ -6,6 +6,7 @@ import es.cesguiro.domain.exception.ValidationException;
 import es.cesguiro.domain.mapper.BookMapper;
 import es.cesguiro.domain.model.Book;
 import es.cesguiro.domain.model.Page;
+import es.cesguiro.domain.repository.AuthorRepository;
 import es.cesguiro.domain.repository.PublisherRepository;
 import es.cesguiro.domain.repository.entity.BookEntity;
 import es.cesguiro.domain.service.dto.BookDto;
@@ -19,10 +20,12 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final PublisherRepository publisherRepository;
+    private final AuthorRepository authorRepository;
 
-    public BookServiceImpl(BookRepository bookRepository, PublisherRepository publisherRepository) {
+    public BookServiceImpl(BookRepository bookRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
         this.publisherRepository = publisherRepository;
+        this.authorRepository = authorRepository;
     }
 
     @Override
@@ -74,6 +77,15 @@ public class BookServiceImpl implements BookService {
                 publisherRepository.findById(bookDto.publisher().id()).isEmpty()) {
             throw new ResourceNotFoundException("Publisher with id " + bookDto.publisher().id() + " does not exist");
         }
+
+        if(bookDto.authors() != null) {
+            bookDto.authors().forEach(author -> {
+                if (authorRepository.findById(author.id()).isEmpty()) {
+                    throw new ResourceNotFoundException("Author with id " + author.id() + " does not exist");
+                }
+            });
+        }
+
         return BookMapper.getInstance().fromBookToBookDto(
                 BookMapper.getInstance().fromBookEntityToBook(
                         bookRepository.save(newBookEntity)

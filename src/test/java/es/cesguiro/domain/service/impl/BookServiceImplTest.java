@@ -233,6 +233,9 @@ class BookServiceImplTest {
 
         when(bookRepository.save(newBookEntity)).thenReturn(bookEntityCreated);
         when(publisherRepository.findById(1L)).thenReturn(Optional.of(publisherEntities.getFirst()));
+        when(authorRepository.findById(1L)).thenReturn(Optional.of(authorEntities.getFirst()));
+        when(authorRepository.findById(2L)).thenReturn(Optional.of(authorEntities.get(1)));
+        when(bookRepository.findByIsbn(newBookDto.isbn())).thenReturn(Optional.empty());
 
         BookDto createdBook = bookServiceImpl.create(newBookDto);
 
@@ -281,6 +284,43 @@ class BookServiceImplTest {
         when(publisherRepository.findById(nonExistingPublisher.id())).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.create(bookDtoWithNonExistingPublisher));
+    }
+
+    @Test
+    @DisplayName("createBook should throw exception when an author does not exist")
+    void createBook_ShouldThrowException_WhenAnAuthorDoesNotExist() {
+        AuthorDto nonExistingAuthor = new AuthorDto(
+                99L,
+                "Non existing Author",
+                "nationality",
+                "biographyEs",
+                "biographyEn",
+                1970,
+                null,
+                "non-existing-author"
+        );
+        BookDto bookDtoWithNonExistingAuthor = new BookDto(
+                null,
+                "9999999999999",
+                "Book Title ES",
+                "Book Title EN",
+                "Book Synopsis ES",
+                "Book Synopsis EN",
+                new BigDecimal("19.99"),
+                10.0,
+                null,
+                "http://example.com/bookcover.jpg",
+                LocalDate.of(2024,1,1),
+                publisherDtos.getFirst(),
+                List.of(authorDtos.getFirst(), nonExistingAuthor)
+        );
+
+        when(bookRepository.findByIsbn(bookDtoWithNonExistingAuthor.isbn())).thenReturn(Optional.empty());
+        when(publisherRepository.findById(publisherDtos.getFirst().id())).thenReturn(Optional.of(publisherEntities.getFirst()));
+        when(authorRepository.findById(authorDtos.getFirst().id())).thenReturn(Optional.of(authorEntities.getFirst()));
+        when(authorRepository.findById(nonExistingAuthor.id())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.create(bookDtoWithNonExistingAuthor));
     }
 
 
