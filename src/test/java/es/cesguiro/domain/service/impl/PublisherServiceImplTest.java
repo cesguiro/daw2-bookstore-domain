@@ -1,6 +1,7 @@
 package es.cesguiro.domain.service.impl;
 
 import es.cesguiro.data.loader.PublishersDataLoader;
+import es.cesguiro.domain.exception.ResourceNotFoundException;
 import es.cesguiro.domain.exception.ValidationException;
 import es.cesguiro.domain.model.Publisher;
 import es.cesguiro.domain.repository.PublisherRepository;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -54,6 +56,7 @@ class PublisherServiceImplTest {
                 publisherDto.id(),
                 "Updated Name",
                 "updated-slug");
+        when(publisherRepository.findById(publisherDto.id())).thenReturn(Optional.of(publisherEntity));
         when(publisherRepository.save(publisherEntity)).thenReturn(updatedPublisherEntity);
 
         PublisherDto result = publisherServiceImpl.update(publisherDto);
@@ -69,12 +72,19 @@ class PublisherServiceImplTest {
     }
 
     @Test
-    @DisplayName("Update publisher with null PublisherDto throws ValidationException")
+    @DisplayName("Update publisher with non existing PublisherDto throws ResourceNotFoundException")
     void updatePublisher_WithNullPublisherDto_ThrowsValidationException() {
-        ValidationException exception = assertThrows(ValidationException.class, () -> {
-            publisherServiceImpl.update(null);
+        PublisherDto publisherDto = new PublisherDto(
+                999L,
+                "Non Existing Publisher",
+                "non-existing-publisher");
+        when(publisherRepository.findById(publisherDto.id())).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            publisherServiceImpl.update(publisherDto);
         });
-        assertEquals("PublisherDto cannot be null", exception.getMessage());
+
+        assertEquals("Publisher with id 999 not found", exception.getMessage());
     }
 
 

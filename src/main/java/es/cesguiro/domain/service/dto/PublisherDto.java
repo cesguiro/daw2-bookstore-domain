@@ -1,7 +1,7 @@
 package es.cesguiro.domain.service.dto;
 
 
-import es.cesguiro.domain.validation.hibernate_validator.Slug;
+import es.cesguiro.domain.validation.spring_validator.Slug;
 import jakarta.validation.constraints.NotNull;
 
 public record PublisherDto(

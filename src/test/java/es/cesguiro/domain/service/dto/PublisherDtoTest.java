@@ -1,15 +1,10 @@
 package es.cesguiro.domain.service.dto;
 
 import es.cesguiro.domain.exception.ValidationException;
-import es.cesguiro.domain.validation.hibernate_validator.DtoValidator;
-import jakarta.validation.*;
-import org.junit.jupiter.api.BeforeAll;
+import es.cesguiro.domain.validation.spring_validator.DtoValidator;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 

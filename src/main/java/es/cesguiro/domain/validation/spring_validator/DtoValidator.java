@@ -1,4 +1,4 @@
-package es.cesguiro.domain.validation.hibernate_validator;
+package es.cesguiro.domain.validation.spring_validator;
 
 import es.cesguiro.domain.exception.ValidationException;
 import jakarta.validation.*;

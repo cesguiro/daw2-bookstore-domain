@@ -1,8 +1,6 @@
 package es.cesguiro.domain.service.dto;
 
-import es.cesguiro.domain.validation.hibernate_validator.Slug;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import es.cesguiro.domain.validation.spring_validator.Slug;
 import jakarta.validation.constraints.NotNull;
 
 public record AuthorDto(

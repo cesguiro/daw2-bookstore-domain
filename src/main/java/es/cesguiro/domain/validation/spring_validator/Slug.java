@@ -1,4 +1,4 @@
-package es.cesguiro.domain.validation.hibernate_validator;
+package es.cesguiro.domain.validation.spring_validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
