@@ -68,6 +68,15 @@ class PublisherServiceImplTest {
         verify(publisherRepository).save(publisherEntity);
     }
 
+    @Test
+    @DisplayName("Update publisher with null PublisherDto throws ValidationException")
+    void updatePublisher_WithNullPublisherDto_ThrowsValidationException() {
+        ValidationException exception = assertThrows(ValidationException.class, () -> {
+            publisherServiceImpl.update(null);
+        });
+        assertEquals("PublisherDto cannot be null", exception.getMessage());
+    }
+
 
 
 }

@@ -37,6 +37,8 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Override
     public PublisherDto update(PublisherDto publisherDto) {
+        PublisherEntity existingPublisher = publisherRepository.findById(publisherDto.id())
+                .orElseThrow(() -> new ResourceNotFoundException("Publisher with id " + publisherDto.id() + " not found"));
         PublisherEntity updatedPublisher = publisherRepository.save(
                 PublisherMapper.getInstance().fromPublisherToPublisherEntity(
                     PublisherMapper.getInstance().fromPublisherDtoToPublisher(publisherDto)

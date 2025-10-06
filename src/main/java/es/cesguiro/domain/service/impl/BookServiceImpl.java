@@ -62,6 +62,8 @@ public class BookServiceImpl implements BookService {
                 .map(BookMapper.getInstance()::fromBookToBookDto);
     }
 
+
+
     @Override
     @Transactional
     public BookDto create(BookDto bookDto) {
@@ -96,12 +98,49 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookDto update(BookDto bookDto) {
-        return null;
+        Optional<BookDto> existingBookDto = bookRepository.findById(bookDto.id())
+                .map(BookMapper.getInstance()::fromBookEntityToBook)
+                .map(BookMapper.getInstance()::fromBookToBookDto);
+
+        if (existingBookDto.isEmpty()) {
+            throw new BusinessException("Book with id " + bookDto.id() + " does not exist");
+        }
+
+        BookEntity newBookEntity = BookMapper.getInstance().fromBookToBookEntity(
+                BookMapper.getInstance().fromBookDtoToBook(bookDto)
+        );
+
+        if(bookDto.publisher() != null  &&
+                publisherRepository.findById(bookDto.publisher().id()).isEmpty()) {
+            throw new ResourceNotFoundException("Publisher with id " + bookDto.publisher().id() + " does not exist");
+        }
+
+        if(bookDto.authors() != null) {
+            bookDto.authors().forEach(author -> {
+                if (authorRepository.findById(author.id()).isEmpty()) {
+                    throw new ResourceNotFoundException("Author with id " + author.id() + " does not exist");
+                }
+            });
+        }
+
+        return BookMapper.getInstance().fromBookToBookDto(
+                BookMapper.getInstance().fromBookEntityToBook(
+                        bookRepository.save(newBookEntity)
+                )
+        );
     }
 
     @Override
-    public void delete(String isbn) {
+    @Transactional
+    public void deleteByIsbn(String isbn) {
+        Optional<BookDto> existingBookDto = findByIsbn(isbn);
 
+        if (existingBookDto.isEmpty()) {
+            throw new BusinessException("Book with isbn " + isbn + " does not exist");
+        }
+
+        bookRepository.deleteByIsbn(isbn);
     }
 }

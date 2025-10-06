@@ -12,7 +12,6 @@ public class DtoValidator {
     static {
         ValidatorFactory factory = Validation.byDefaultProvider()
                 .configure()
-                .messageInterpolator(new org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator())
                 .buildValidatorFactory();
         validator = factory.getValidator();
     }
