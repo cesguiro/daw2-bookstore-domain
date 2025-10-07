@@ -7,11 +7,11 @@ public class Author {
     private String nationality;
     private String biographyEs;
     private String biographyEn;
-    private int birthYear;
+    private Integer birthYear;
     private Integer deathYear;
     private String slug;
 
-    public Author(Long id, String name, String nationality, String biographyEs, String biographyEn, int birthYear, Integer deathYear, String slug) {
+    public Author(Long id, String name, String nationality, String biographyEs, String biographyEn, Integer birthYear, Integer deathYear, String slug) {
         this.id = id;
         this.name = name;
         this.nationality = nationality;
@@ -58,11 +58,11 @@ public class Author {
         this.biographyEn = biographyEn;
     }
 
-    public int getBirthYear() {
+    public Integer getBirthYear() {
         return birthYear;
     }
 
-    public void setBirthYear(int birthYear) {
+    public void setBirthYear(Integer birthYear) {
         this.birthYear = birthYear;
     }
 

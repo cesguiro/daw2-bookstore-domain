@@ -6,7 +6,7 @@ public record AuthorEntity(
         String nationality,
         String biographyEs,
         String biographyEn,
-        int birthYear,
+        Integer birthYear,
         Integer deathYear,
         String slug
 ) {

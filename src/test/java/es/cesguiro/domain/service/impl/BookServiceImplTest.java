@@ -77,10 +77,10 @@ class BookServiceImplTest {
 
     static Stream<Arguments> provideFindAllArguments() {
         return Stream.of(
-                Arguments.of(1, 10, 2L, bookEntities.subList(0,2), new Page<>(bookDtos.subList(0, 2), 1, 10, 2)),
-                Arguments.of(1, 3, 3L, bookEntities.subList(0,3), new Page<>(bookDtos.subList(0, 3), 1, 3, 3)),
-                Arguments.of(1, 3, 9L, bookEntities.subList(0,3), new Page<>(bookDtos.subList(0, 3), 1, 3, 9)),
-                Arguments.of(2, 3, 5L, bookEntities.subList(3,5), new Page<>(bookDtos.subList(3, 5), 2, 3, 5))
+                Arguments.of(1, 10, 2L, bookEntities.subList(0, 2), new Page<>(bookDtos.subList(0, 2), 1, 10, 2)),
+                Arguments.of(1, 3, 3L, bookEntities.subList(0, 3), new Page<>(bookDtos.subList(0, 3), 1, 3, 3)),
+                Arguments.of(1, 3, 9L, bookEntities.subList(0, 3), new Page<>(bookDtos.subList(0, 3), 1, 3, 9)),
+                Arguments.of(2, 3, 5L, bookEntities.subList(3, 5), new Page<>(bookDtos.subList(3, 5), 2, 3, 5))
         );
     }
 
@@ -196,7 +196,7 @@ class BookServiceImplTest {
                 0.0,
                 null,
                 "http://example.com/newbookcover.jpg",
-                LocalDate.of(2024,1,1),
+                LocalDate.of(2024, 1, 1),
                 publisherDtos.getFirst(),
                 List.of(authorDtos.getFirst(), authorDtos.get(1))
         );
@@ -211,7 +211,7 @@ class BookServiceImplTest {
                 new BigDecimal("29.99"),
                 0.0,
                 "http://example.com/newbookcover.jpg",
-                LocalDate.of(2024,1,1),
+                LocalDate.of(2024, 1, 1),
                 publisherEntities.getFirst(),
                 List.of(authorEntities.getFirst(), authorEntities.get(1))
         );
@@ -226,7 +226,7 @@ class BookServiceImplTest {
                 new BigDecimal("29.99"),
                 0.0,
                 "http://example.com/newbookcover.jpg",
-                LocalDate.of(2024,1,1),
+                LocalDate.of(2024, 1, 1),
                 publisherEntities.getFirst(),
                 List.of(authorEntities.getFirst(), authorEntities.get(1))
         );
@@ -275,7 +275,7 @@ class BookServiceImplTest {
                 10.0,
                 null,
                 "http://example.com/bookcover.jpg",
-                LocalDate.of(2024,1,1),
+                LocalDate.of(2024, 1, 1),
                 nonExistingPublisher,
                 List.of(authorDtos.getFirst())
         );
@@ -310,7 +310,7 @@ class BookServiceImplTest {
                 10.0,
                 null,
                 "http://example.com/bookcover.jpg",
-                LocalDate.of(2024,1,1),
+                LocalDate.of(2024, 1, 1),
                 publisherDtos.getFirst(),
                 List.of(authorDtos.getFirst(), nonExistingAuthor)
         );
@@ -321,6 +321,106 @@ class BookServiceImplTest {
         when(authorRepository.findById(nonExistingAuthor.id())).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.create(bookDtoWithNonExistingAuthor));
+    }
+
+
+    @Test
+    @DisplayName("updateBook should update an existing book")
+    void updateBook_ShouldUpdateExistingBook() {
+        BookDto existingBookDto = bookDtos.getFirst();
+        BookEntity existingBookEntity = bookEntities.getFirst();
+        BookEntity updatedBookEntity = new BookEntity(
+                existingBookEntity.id(),
+                existingBookEntity.isbn(),
+                "Updated Title ES",
+                "Updated Title EN",
+                "Updated Synopsis ES",
+                "Updated Synopsis EN",
+                new BigDecimal("39.99"),
+                5.0,
+                existingBookEntity.cover(),
+                existingBookEntity.publicationDate(),
+                existingBookEntity.publisher(),
+                existingBookEntity.authors()
+        );
+        BookDto expectedUpdatedBookDto = new BookDto(
+                existingBookDto.id(),
+                existingBookDto.isbn(),
+                "Updated Title ES",
+                "Updated Title EN",
+                "Updated Synopsis ES",
+                "Updated Synopsis EN",
+                new BigDecimal("39.99"),
+                5.0,
+                null,
+                existingBookDto.cover(),
+                existingBookDto.publicationDate(),
+                existingBookDto.publisher(),
+                existingBookDto.authors()
+        );
+
+        when(bookRepository.findById(existingBookDto.id())).thenReturn(Optional.of(existingBookEntity));
+        when(bookRepository.save(updatedBookEntity)).thenReturn(updatedBookEntity);
+        when(publisherRepository.findById(existingBookDto.publisher().id())).thenReturn(Optional.of(publisherEntities.getFirst()));
+        when(authorRepository.findById(existingBookDto.authors().get(0).id())).thenReturn(Optional.of(authorEntities.getFirst()));
+        if (existingBookDto.authors().size() > 1) {
+            when(authorRepository.findById(existingBookDto.authors().get(1).id())).thenReturn(Optional.of(authorEntities.get(1)));
+        }
+        BookDto result = bookServiceImpl.update(expectedUpdatedBookDto);
+        assertAll(
+                () -> assertNotNull(result, "Result should not be null"),
+                () -> assertEquals(expectedUpdatedBookDto.id(), result.id(), "ID should match"),
+                () -> assertEquals(expectedUpdatedBookDto.titleEs(), result.titleEs(), "Title should be updated")
+        );
+    }
+
+    @Test
+    @DisplayName("updateBook should throw exception when book does not exist")
+    void updateBook_ShouldThrowException_WhenBookDoesNotExist() {
+        BookDto nonExistingBookDto = new BookDto(
+                99L,
+                "9999999999999",
+                "Non-existing Book Title ES",
+                "Non-existing Book Title EN",
+                "Non-existing Book Synopsis ES",
+                "Non-existing Book Synopsis EN",
+                new BigDecimal("29.99"),
+                0.0,
+                null,
+                "http://example.com/nonexistingbookcover.jpg",
+                LocalDate.of(2024, 1, 1),
+                publisherDtos.getFirst(),
+                List.of(authorDtos.getFirst())
+        );
+        when(bookRepository.findById(nonExistingBookDto.id())).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.update(nonExistingBookDto));
+    }
+
+    @Test
+    @DisplayName("updateBook should throw exception when updating to an existing ISBN")
+    void updateBook_ShouldThrowException_WhenUpdatingToExistingIsbn() {
+        BookDto existingBookDto = bookDtos.getFirst();
+        BookEntity existingBookEntity = bookEntities.getFirst();
+        BookEntity anotherExistingBookEntity = bookEntities.get(1);
+        BookDto bookDtoWithExistingIsbn = new BookDto(
+                existingBookDto.id(),
+                anotherExistingBookEntity.isbn(), // ISBN of another existing book
+                "Updated Title ES",
+                "Updated Title EN",
+                "Updated Synopsis ES",
+                "Updated Synopsis EN",
+                new BigDecimal("39.99"),
+                5.0,
+                null,
+                existingBookDto.cover(),
+                existingBookDto.publicationDate(),
+                existingBookDto.publisher(),
+                existingBookDto.authors()
+        );
+
+        when(bookRepository.findById(existingBookDto.id())).thenReturn(Optional.of(existingBookEntity));
+        when(bookRepository.findByIsbn(anotherExistingBookEntity.isbn())).thenReturn(Optional.of(anotherExistingBookEntity));
+        assertThrows(BusinessException.class, () -> bookServiceImpl.update(bookDtoWithExistingIsbn));
     }
 
 

@@ -12,7 +12,7 @@ public record BookEntity(
         String synopsisEs,
         String synopsisEn,
         BigDecimal basePrice,
-        double discountPercentage,
+        Double discountPercentage,
         String cover,
         LocalDate publicationDate,
         PublisherEntity publisher,

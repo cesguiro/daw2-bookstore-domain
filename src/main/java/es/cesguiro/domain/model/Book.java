@@ -19,7 +19,7 @@ public class Book {
     private final String synopsisEs;
     private final String synopsisEn;
     private final BigDecimal basePrice;
-    private final double discountPercentage;
+    private final Double discountPercentage;
     private final BigDecimal price;
     private final String cover;
     private final LocalDate publicationDate;
@@ -34,7 +34,7 @@ public class Book {
             String synopsisEs,
             String synopsisEn,
             BigDecimal basePrice,
-            double discountPercentage,
+            Double discountPercentage,
             String cover,
             LocalDate publicationDate,
             Publisher publisher,
@@ -89,7 +89,7 @@ public class Book {
     }
 
 
-    public double getDiscountPercentage() {
+    public Double getDiscountPercentage() {
         return discountPercentage;
     }
 

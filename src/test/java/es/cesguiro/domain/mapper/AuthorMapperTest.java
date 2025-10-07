@@ -81,4 +81,48 @@ class AuthorMapperTest {
 
     }
 
+    @Test
+    @DisplayName("Test map AuthorDto to Author with only id")
+    void toAuthor_FromAuthorDtoWithOnlyId() {
+        // Arrange
+        AuthorDto authorDto = new AuthorDto(authorDtos.getFirst().id(), null, null, null, null, null, null, null);
+
+        // Act
+        Author result = AuthorMapper.getInstance().fromAuthorDtoToAuthor(authorDto);
+
+        // Assert
+        assertAll(
+                () -> assertNotNull(result, "Resulting Author should not be null"),
+                () -> assertEquals(authorDto.id(), result.getId(), "IDs should match"),
+                () -> assertNull(result.getName(), "Name should be null"),
+                () -> assertNull(result.getNationality(), "Nationality should be null"),
+                () -> assertNull(result.getBiographyEs(), "BiographyEs should be null"),
+                () -> assertNull(result.getBiographyEn(), "BiographyEn should be null"),
+                () -> assertNull(result.getBirthYear(), "BirthYear should be null"),
+                () -> assertNull(result.getDeathYear(), "DeathYear should be null"),
+                () -> assertNull(result.getSlug(), "Slug should be null")
+        );
+    }
+
+    @Test
+    @DisplayName("Test map Author to AuthorEntity with only id")
+    void toAuthorEntity_FromAuthorWithOnlyId() {
+        // Arrange
+        Author author = new Author(authorEntities.getFirst().id(), null, null, null, null, null, null, null);
+        // Act
+        AuthorEntity result = AuthorMapper.getInstance().fromAuthorToAuthorEntity(author);
+        // Assert
+        assertAll(
+                () -> assertNotNull(result, "Resulting AuthorEntity should not be null"),
+                () -> assertEquals(author.getId(), result.id(), "IDs should match"),
+                () -> assertNull(result.name(), "Name should be null"),
+                () -> assertNull(result.nationality(), "Nationality should be null"),
+                () -> assertNull(result.biographyEs(), "BiographyEs should be null"),
+                () -> assertNull(result.biographyEn(), "BiographyEn should be null"),
+                () -> assertNull(result.birthYear(), "BirthYear should be null"),
+                () -> assertNull(result.deathYear(), "DeathYear should be null"),
+                () -> assertNull(result.slug(), "Slug should be null")
+        );
+    }
+
 }

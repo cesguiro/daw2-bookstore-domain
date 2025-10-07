@@ -10,7 +10,7 @@ public record AuthorDto(
         String nationality,
         String biographyEs,
         String biographyEn,
-        int birthYear,
+        Integer birthYear,
         Integer deathYear,
         @Slug
         String slug
