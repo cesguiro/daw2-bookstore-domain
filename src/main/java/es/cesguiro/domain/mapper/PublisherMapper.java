@@ -1,6 +1,5 @@
 package es.cesguiro.domain.mapper;
 
-import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.model.Publisher;
 import es.cesguiro.domain.repository.entity.PublisherEntity;
 import es.cesguiro.domain.service.dto.PublisherDto;
