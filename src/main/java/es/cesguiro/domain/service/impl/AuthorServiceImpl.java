@@ -18,7 +18,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<AuthorDto> getAll() {
+    public List<AuthorDto> getAll(int page, int size) {
         return List.of();
     }
 

@@ -18,7 +18,7 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     @Override
-    public List<PublisherDto> getAll() {
+    public List<PublisherDto> getAll(int page, int size) {
         return null;
     }
 
