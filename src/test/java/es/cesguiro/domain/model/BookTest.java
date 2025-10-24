@@ -27,6 +27,7 @@ class BookTest {
 
 
     private static final TestDataFactory testDataFactory = new TestDataFactory();
+    private static final int SEED_VALUE = 0;
 
     @ParameterizedTest(name = "{index} => basePrice={0}, discountPercentage={1}, expectedPrice={2}")
     @DisplayName("Calculate final price with various discounts")
@@ -35,7 +36,7 @@ class BookTest {
             "50.00, 0.0, 50.00",
             "75.00, 100.0, 0.00"
     })
-    void calculateFinalPrice(String basePrice, double discountPercentage, String expectedPrice) {
+    void calculateFinalPrice(String basePrice, String discountPercentage, String expectedPrice) {
         Book book = new Book(
                 1L,
                 "9999999999999",
@@ -44,7 +45,7 @@ class BookTest {
                 "Sinopsis en Español",
                 "Synopsis in English",
                 new BigDecimal(basePrice),
-                discountPercentage,
+                new BigDecimal(discountPercentage),
                 "cover.jpg",
                 LocalDate.of(2023, 1, 1),
                 null,
@@ -55,7 +56,7 @@ class BookTest {
     }
 
     private Book createBookWithAuthors(Author author) {
-        Book base = testDataFactory.createBook(Book.class, false);
+        Book base = testDataFactory.createBook(Book.class, false, SEED_VALUE);
         return new Book(
                 base.getId(),
                 base.getIsbn(),
@@ -75,9 +76,9 @@ class BookTest {
     @Test
     @DisplayName("Test add Author to Book")
     void testAddAuthorToBook() {
-        Author author1 = testDataFactory.createAuthor(Author.class);
+        Author author1 = testDataFactory.createAuthor(Author.class, SEED_VALUE);
         Book book = createBookWithAuthors(author1);
-        Author author2 = testDataFactory.createAuthor(Author.class);
+        Author author2 = testDataFactory.createAuthor(Author.class, SEED_VALUE);
         book.addAuthor(author2);
         assertTrue(book.getAuthors().contains(author2), "Book should contain the added author");
     }
@@ -85,7 +86,7 @@ class BookTest {
     @Test
     @DisplayName("Add existing Author to Book")
     void addExistingAuthorToBook() {
-        Author author = testDataFactory.createAuthor(Author.class);
+        Author author = testDataFactory.createAuthor(Author.class, SEED_VALUE);
         Book book = createBookWithAuthors(author);
         assertThrows(BusinessException.class, () -> book.addAuthor(author));
     }

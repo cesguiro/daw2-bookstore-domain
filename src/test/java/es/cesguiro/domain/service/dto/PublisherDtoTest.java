@@ -17,8 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class PublisherDtoTest {
 
     private final static TestDataFactory testDataFactory = new TestDataFactory();
+    private static final int SEED_VALUE = 0;
 
-    private static final PublisherDto VALID_PUBLISHER = testDataFactory.createPublisher(PublisherDto.class);
+    private static final PublisherDto VALID_PUBLISHER = testDataFactory.createPublisher(PublisherDto.class, SEED_VALUE);
 
     @Test
     @DisplayName("Create publisherDto with valid data should not throw ValidationException")

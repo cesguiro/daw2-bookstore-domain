@@ -22,9 +22,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookMapperTest {
 
     private final static TestDataFactory testDataFactory = new TestDataFactory();
+    private static final int SEED_VALUE = 0;
 
     private static BookEntity buildBookEntity(PublisherEntity publisher, List<AuthorEntity> authors) {
-        BookEntity base = testDataFactory.createBook(BookEntity.class, false);
+        BookEntity base = testDataFactory.createBook(BookEntity.class, false, SEED_VALUE);
         return new BookEntity(
                 base.id(), base.isbn(), base.titleEs(), base.titleEn(),
                 base.synopsisEs(), base.synopsisEn(), base.basePrice(),
@@ -36,10 +37,10 @@ class BookMapperTest {
         return Stream.of(
                 buildBookEntity(null, List.of()),
                 buildBookEntity(null, List.of()),
-                buildBookEntity(testDataFactory.createPublisher(PublisherEntity.class), List.of()),
-                buildBookEntity(null, testDataFactory.createAuthorList(AuthorEntity.class, 1)),
-                buildBookEntity(testDataFactory.createPublisher(PublisherEntity.class), testDataFactory.createAuthorList(AuthorEntity.class, 1)),
-                buildBookEntity(testDataFactory.createPublisher(PublisherEntity.class), testDataFactory.createAuthorList(AuthorEntity.class, 3))
+                buildBookEntity(testDataFactory.createPublisher(PublisherEntity.class, SEED_VALUE), List.of()),
+                buildBookEntity(null, testDataFactory.createAuthorList(AuthorEntity.class, 1, SEED_VALUE)),
+                buildBookEntity(testDataFactory.createPublisher(PublisherEntity.class, SEED_VALUE), testDataFactory.createAuthorList(AuthorEntity.class, 1, SEED_VALUE)),
+                buildBookEntity(testDataFactory.createPublisher(PublisherEntity.class, SEED_VALUE), testDataFactory.createAuthorList(AuthorEntity.class, 3, SEED_VALUE))
         );
     }
 
@@ -82,7 +83,7 @@ class BookMapperTest {
     }
 
     private static Book buildBook(Publisher publisher, List<Author> authors) {
-        Book base = testDataFactory.createBook(Book.class, false);
+        Book base = testDataFactory.createBook(Book.class, false, SEED_VALUE);
         return new Book(
                 base.getId(), base.getIsbn(), base.getTitleEs(), base.getTitleEn(),
                 base.getSynopsisEs(), base.getSynopsisEn(), base.getBasePrice(),
@@ -93,10 +94,10 @@ class BookMapperTest {
     static Stream<Book> validBooks() {
         return Stream.of(
                 buildBook(null, List.of()),
-                buildBook(testDataFactory.createPublisher(Publisher.class), List.of()),
-                buildBook(null, testDataFactory.createAuthorList(Author.class, 1)),
-                buildBook(testDataFactory.createPublisher(Publisher.class), testDataFactory.createAuthorList(Author.class, 1)),
-                buildBook(testDataFactory.createPublisher(Publisher.class), testDataFactory.createAuthorList(Author.class, 3))
+                buildBook(testDataFactory.createPublisher(Publisher.class, SEED_VALUE), List.of()),
+                buildBook(null, testDataFactory.createAuthorList(Author.class, 1, SEED_VALUE)),
+                buildBook(testDataFactory.createPublisher(Publisher.class, SEED_VALUE), testDataFactory.createAuthorList(Author.class, 1, SEED_VALUE)),
+                buildBook(testDataFactory.createPublisher(Publisher.class, SEED_VALUE), testDataFactory.createAuthorList(Author.class, 3, SEED_VALUE))
         );
     }
 
@@ -179,7 +180,7 @@ class BookMapperTest {
     }
 
     private static BookDto buildBookDto(PublisherDto publisher, List<AuthorDto> authors) {
-        BookDto base = testDataFactory.createBook(BookDto.class, false);
+        BookDto base = testDataFactory.createBook(BookDto.class, false, SEED_VALUE);
         return new BookDto(
                 base.id(), base.isbn(), base.titleEs(), base.titleEn(),
                 base.synopsisEs(), base.synopsisEn(), base.basePrice(),
@@ -190,10 +191,10 @@ class BookMapperTest {
     static Stream<BookDto> validBookDtos() {
         return Stream.of(
                 buildBookDto(null, List.of()),
-                buildBookDto(testDataFactory.createPublisher(PublisherDto.class), List.of()),
-                buildBookDto(null, testDataFactory.createAuthorList(AuthorDto.class, 1)),
-                buildBookDto(testDataFactory.createPublisher(PublisherDto.class), testDataFactory.createAuthorList(AuthorDto.class, 1)),
-                buildBookDto(testDataFactory.createPublisher(PublisherDto.class), testDataFactory.createAuthorList(AuthorDto.class, 3))
+                buildBookDto(testDataFactory.createPublisher(PublisherDto.class, SEED_VALUE), List.of()),
+                buildBookDto(null, testDataFactory.createAuthorList(AuthorDto.class, 1, SEED_VALUE)),
+                buildBookDto(testDataFactory.createPublisher(PublisherDto.class, SEED_VALUE), testDataFactory.createAuthorList(AuthorDto.class, 1, SEED_VALUE)),
+                buildBookDto(testDataFactory.createPublisher(PublisherDto.class, SEED_VALUE), testDataFactory.createAuthorList(AuthorDto.class, 3, SEED_VALUE))
         );
     }
 

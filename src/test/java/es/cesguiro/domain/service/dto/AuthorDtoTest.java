@@ -17,8 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class AuthorDtoTest {
 
     private static final TestDataFactory testDataFactory = new TestDataFactory();
+    private static final int SEED_VALUE = 0;
 
-    private static final AuthorDto VALID_AUTHOR = testDataFactory.createAuthor(AuthorDto.class);
+    private static final AuthorDto VALID_AUTHOR = testDataFactory.createAuthor(AuthorDto.class, SEED_VALUE);
 
     @Test
     @DisplayName("Create AuthorDto with valid data should not throw ValidationException")

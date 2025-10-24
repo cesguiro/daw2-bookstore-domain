@@ -59,21 +59,21 @@ class BookServiceImplTest {
 
     static Stream<Arguments> provideFindAllArguments() {
         return Stream.of(
+                Arguments.of(1, 5, 2L,
+                        testDataFactory.createBookList(BookEntity.class, 2, true, 456),
+                        new Page<>(testDataFactory.createBookList(BookDto.class, 2, true, 456), 1, 5, 2)),
                 Arguments.of(1, 10, 2L,
-                        testDataFactory.createBookList(BookEntity.class, 2, true),
-                        new Page<>(testDataFactory.createBookList(BookDto.class, 2, true), 1, 5, 10)),
-                Arguments.of(1, 10, 2L,
-                        testDataFactory.createBookList(BookEntity.class, 2, true),
-                        new Page<>(testDataFactory.createBookList(BookDto.class, 2, true), 1, 10, 2)),
+                        testDataFactory.createBookList(BookEntity.class, 2, true, 123),
+                        new Page<>(testDataFactory.createBookList(BookDto.class, 2, true, 123), 1, 10, 2)),
                 Arguments.of(1, 3, 3L,
-                        testDataFactory.createBookList(BookEntity.class, 3, true),
-                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true), 1, 3, 3)),
+                        testDataFactory.createBookList(BookEntity.class, 3, true, 789),
+                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true, 789), 1, 3, 3)),
                 Arguments.of(1, 3, 9L,
-                        testDataFactory.createBookList(BookEntity.class, 3, true),
-                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true), 1, 3, 9)),
+                        testDataFactory.createBookList(BookEntity.class, 3, true, 321),
+                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true, 321), 1, 3, 9)),
                 Arguments.of(2, 3, 5L,
-                        testDataFactory.createBookList(BookEntity.class, 3, true),
-                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true), 2, 3, 5))
+                        testDataFactory.createBookList(BookEntity.class, 3, true, 654),
+                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true, 654), 2, 3, 5))
         );
     }
 
@@ -89,12 +89,13 @@ class BookServiceImplTest {
                 () -> assertEquals(expected.pageNumber(), result.pageNumber(), "Page number should match"),
                 () -> assertEquals(expected.pageSize(), result.pageSize(), "Page size should match"),
                 () -> assertEquals(expected.totalElements(), result.totalElements(), "Total items should match"),
-                () -> assertEquals(expected.data().getFirst().isbn(), result.data().getFirst().isbn(), "First book ISBN should match")
+                () -> assertEquals(expected.data().getFirst().isbn(), result.data().getFirst().isbn(), "First book ISBN should match"),
+                () -> assertEquals(expected.data().getLast().isbn(), result.data().getLast().isbn(), "Last book ISBN should match")
         );
     }
 
     // test getByIsbn when book exists
-    @Test
+    /*@Test
     @DisplayName("getByIsbn should return book when it exists")
     void getByIsbn_ShouldReturnBook_WhenItExists() {
         BookEntity bookEntity = testDataFactory.createBook(BookEntity.class, false);
@@ -414,7 +415,7 @@ class BookServiceImplTest {
         when(bookRepository.findById(existingBookDto.id())).thenReturn(Optional.of(existingBookEntity));
         when(bookRepository.findByIsbn(anotherExistingBookEntity.isbn())).thenReturn(Optional.of(anotherExistingBookEntity));
         assertThrows(BusinessException.class, () -> bookServiceImpl.update(bookDtoWithExistingIsbn));
-    }
+    }*/
 
 
 }

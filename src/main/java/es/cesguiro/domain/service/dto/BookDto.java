@@ -22,7 +22,7 @@ public record BookDto(
         @NotNull
         @DecimalMin(value = "0.0", inclusive = true, message = "El descuento no puede ser menor a 0")
         @DecimalMax(value = "100.0", inclusive = true, message = "El descuento no puede ser mayor a 100")
-        Double discountPercentage,
+        BigDecimal discountPercentage,
         BigDecimal price,
         String cover,
         @PastOrPresent(message = "La fecha de publicación no puede ser futura")
@@ -39,7 +39,7 @@ public record BookDto(
             String synopsisEs,
             String synopsisEn,
             BigDecimal basePrice,
-            Double discountPercentage,
+            BigDecimal discountPercentage,
             BigDecimal price,
             String cover,
             LocalDate publicationDate,

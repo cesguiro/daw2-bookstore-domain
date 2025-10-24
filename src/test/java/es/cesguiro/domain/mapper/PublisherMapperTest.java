@@ -15,11 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PublisherMapperTest {
 
     private final TestDataFactory testDataFactory = new TestDataFactory();
+    private static final int SEED_VALUE = 0;
 
     @Test
     @DisplayName("Map PublisherEntity to Publisher should return correct Publisher")
     void fromPublisherEntityToPublisherTest() {
-        PublisherEntity publisherEntity = testDataFactory.createPublisher(PublisherEntity.class);
+        PublisherEntity publisherEntity = testDataFactory.createPublisher(PublisherEntity.class, SEED_VALUE);
         var result = PublisherMapper.getInstance().fromPublisherEntityToPublisher(publisherEntity);
         assertAll(
                 () -> assertEquals(publisherEntity.id(), result.getId(), "ID should match"),
@@ -31,7 +32,7 @@ public class PublisherMapperTest {
     @Test
     @DisplayName("Map Publisher to PublisherEntity should return correct PublisherEntity")
     void fromPublisherToPublisherEntityTest() {
-        Publisher publisher = testDataFactory.createPublisher(Publisher.class);
+        Publisher publisher = testDataFactory.createPublisher(Publisher.class, SEED_VALUE);
         var result = PublisherMapper.getInstance().fromPublisherToPublisherEntity(publisher);
         assertAll(
                 () -> assertEquals(publisher.getId(), result.id(), "ID should match"),
@@ -43,7 +44,7 @@ public class PublisherMapperTest {
     @Test
     @DisplayName("Map Publisher to PublisherDto should return correct PublisherDto")
     void fromPublishertoPublisherDtoTest() {
-        Publisher publisher = testDataFactory.createPublisher(Publisher.class);
+        Publisher publisher = testDataFactory.createPublisher(Publisher.class, SEED_VALUE);
         var result = PublisherMapper.getInstance().fromPublisherToPublisherDto(publisher);
 
         assertAll(
@@ -56,7 +57,7 @@ public class PublisherMapperTest {
     @Test
     @DisplayName("Map PublisherDto to Publisher should return correct Publisher")
     void fromPublisherDtoToPublisherTest() {
-        PublisherDto publisherDto = testDataFactory.createPublisher(PublisherDto.class);
+        PublisherDto publisherDto = testDataFactory.createPublisher(PublisherDto.class, SEED_VALUE);
         var result = PublisherMapper.getInstance().fromPublisherDtoToPublisher(publisherDto);
 
         assertAll(

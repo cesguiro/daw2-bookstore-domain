@@ -15,13 +15,13 @@ import java.util.SequencedCollection;
 
 public interface TestDataProvider {
 
-    List<PublisherEntity> createPublisherEntity(int size);
-    List<Publisher> createPublisher(int size);
-    List<PublisherDto> createPublisherDto(int size);
-    List<AuthorEntity> createAuthorEntity(int size);
-    List<Author> createAuthor(int size);
-    List<AuthorDto> createAuthorDto(int size);
-    List<BookEntity> createBookEntity(int size, boolean withRelations);
-    List<Book> createBook(int size, boolean withRelations);
-    List<BookDto> createBookDto(int size, boolean withRelations);
+    List<PublisherEntity> createPublisherEntity(int size, int seed);
+    List<Publisher> createPublisher(int size, int seed);
+    List<PublisherDto> createPublisherDto(int size, int seed);
+    List<AuthorEntity> createAuthorEntity(int size, int seed);
+    List<Author> createAuthor(int size, int seed);
+    List<AuthorDto> createAuthorDto(int size, int seed);
+    List<BookEntity> createBookEntity(int size, boolean withRelations, int seed);
+    List<Book> createBook(int size, boolean withRelations, int seed);
+    List<BookDto> createBookDto(int size, boolean withRelations, int seed);
 }

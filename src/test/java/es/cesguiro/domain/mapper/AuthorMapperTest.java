@@ -20,11 +20,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class AuthorMapperTest {
 
     private static final TestDataFactory testDataFactory = new TestDataFactory();
+    private static final int SEED_VALUE = 0;
 
     @Test
     @DisplayName("Map AuthorEntity to Author should return correct Author")
     void fromAuthorEntityToAuthorTest() {
-        AuthorEntity authorEntity = testDataFactory.createAuthor(AuthorEntity.class);
+        AuthorEntity authorEntity = testDataFactory.createAuthor(AuthorEntity.class, SEED_VALUE);
         var result = AuthorMapper.getInstance().fromAuthorEntityToAuthor(authorEntity);
         assertAll(
                 () -> assertEquals(authorEntity.id(), result.getId(), "ID should match"),
@@ -41,7 +42,7 @@ class AuthorMapperTest {
     @Test
     @DisplayName("Map Author to AuthorEntity should return correct AuthorEntity")
     void fromAuthorToAuthorEntityTest() {
-        Author author = testDataFactory.createAuthor(Author.class);
+        Author author = testDataFactory.createAuthor(Author.class, SEED_VALUE);
         var result = AuthorMapper.getInstance().fromAuthorToAuthorEntity(author);
         assertAll(
                 () -> assertEquals(author.getId(), result.id(), "ID should match"),
@@ -58,7 +59,7 @@ class AuthorMapperTest {
     @Test
     @DisplayName("Map Author to AuthorDto should return correct AuthorDto")
     void fromAuthorToAuthorDtoTest() {
-        Author author = testDataFactory.createAuthor(Author.class);
+        Author author = testDataFactory.createAuthor(Author.class, SEED_VALUE);
         var result = AuthorMapper.getInstance().fromAuthorToAuthorDto(author);
         assertAll(
                 () -> assertEquals(author.getId(), result.id(), "ID should match"),
@@ -75,7 +76,7 @@ class AuthorMapperTest {
     @Test
     @DisplayName("Map AuthorDto to Author should return correct Author")
     void fromAuthorDtoToAuthorTest() {
-        AuthorDto authorDto = testDataFactory.createAuthor(AuthorDto.class);
+        AuthorDto authorDto = testDataFactory.createAuthor(AuthorDto.class, SEED_VALUE);
         var result = AuthorMapper.getInstance().fromAuthorDtoToAuthor(authorDto);
         assertAll(
                 () -> assertEquals(authorDto.id(), result.getId(), "ID should match"),

@@ -19,7 +19,7 @@ public class Book {
     private final String synopsisEs;
     private final String synopsisEn;
     private final BigDecimal basePrice;
-    private final Double discountPercentage;
+    private final BigDecimal discountPercentage;
     private final BigDecimal price;
     private final String cover;
     private final LocalDate publicationDate;
@@ -34,7 +34,7 @@ public class Book {
             String synopsisEs,
             String synopsisEn,
             BigDecimal basePrice,
-            Double discountPercentage,
+            BigDecimal discountPercentage,
             String cover,
             LocalDate publicationDate,
             Publisher publisher,
@@ -89,7 +89,7 @@ public class Book {
     }
 
 
-    public Double getDiscountPercentage() {
+    public BigDecimal getDiscountPercentage() {
         return discountPercentage;
     }
 
@@ -114,7 +114,7 @@ public class Book {
         }
 
         BigDecimal discount = basePrice
-                .multiply(BigDecimal.valueOf(discountPercentage))
+                .multiply(discountPercentage)
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
         return basePrice.subtract(discount).setScale(2, RoundingMode.HALF_UP);
