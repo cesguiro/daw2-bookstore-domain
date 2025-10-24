@@ -11,102 +11,149 @@ import es.cesguiro.domain.service.dto.BookDto;
 import es.cesguiro.domain.service.dto.PublisherDto;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class TestDataFactory {
 
     private final TestDataProvider provider;
+    /*private final Map<Class<?>, BiFunction<TestDataProvider, Integer, List<?>>> creators = Map.of(
+            PublisherEntity.class, TestDataProvider::createPublisherEntity,
+            PublisherDto.class, TestDataProvider::createPublisherDto,
+            Publisher.class, TestDataProvider::createPublisher,
+            AuthorEntity.class, TestDataProvider::createAuthorEntity,
+            AuthorDto.class, TestDataProvider::createAuthorDto,
+            Author.class, TestDataProvider::createAuthor,
+            BookEntity.class, TestDataProvider::createBookEntity,
+            BookDto.class, TestDataProvider::createBookDto,
+            Book.class, TestDataProvider::createBook
+    );*/
+
+    public TestDataFactory() {
+        this(new TestDataProviderInstancio());
+    }
 
     public TestDataFactory(TestDataProvider provider) {
         if (provider == null) {
-            provider = new TestDataProviderInstancio();
+            throw new IllegalArgumentException("TestDataProvider cannot be null");
         }
         this.provider = provider;
     }
 
-    public <T> T of(Class<T> clazz) {
+
+   /* public <T> T of(Class<T> clazz) {
+        BiFunction<TestDataProvider, Integer, List<?>> creator = creators.get(clazz);
+
+        if(creator == null) {
+            throw new IllegalArgumentException("Unsupported class: " + clazz.getName());
+        }
+        List<?> sourceList = creator.apply(provider, 1);
+        return clazz.cast(sourceList.getFirst());
+    }
+
+    public <T> List<T> ofList(Class<T> clazz, int size) {
+        BiFunction<TestDataProvider, Integer, List<?>> creator = creators.get(clazz);
+
+        if(creator == null) {
+            throw new IllegalArgumentException("Unsupported class: " + clazz.getName());
+        }
+        List<?> sourceList = creator.apply(provider, size);
+        return sourceList.stream()
+                .map(clazz::cast)
+                .toList();
+    }*/
+
+    public <T> T createPublisher(Class<T> clazz) {
         if (clazz.equals(PublisherEntity.class)) {
             return clazz.cast(provider.createPublisherEntity(1).getFirst());
-        }
-        if (clazz.equals(PublisherDto.class)) {
-            return clazz.cast(provider.createPublisherDto(1).getFirst());
         }
         if (clazz.equals(Publisher.class)) {
             return clazz.cast(provider.createPublisher(1).getFirst());
         }
-        if (clazz.equals(AuthorEntity.class)) {
-            return clazz.cast(new TestDataProviderInstancio().createAuthorEntity(1).getFirst());
+        if (clazz.equals(PublisherDto.class)) {
+            return clazz.cast(provider.createPublisherDto(1).getFirst());
         }
-        if (clazz.equals(AuthorDto.class)) {
-            return clazz.cast(new TestDataProviderInstancio().createAuthorDto(1).getFirst());
-        }
-        if (clazz.equals(Author.class)) {
-            return clazz.cast(new TestDataProviderInstancio().createAuthor(1).getFirst());
-        }
-        if (clazz.equals(BookEntity.class)) {
-            return clazz.cast(new TestDataProviderInstancio().createBookEntity(1).getFirst());
-        }
-        if (clazz.equals(BookDto.class)) {
-            return clazz.cast(new TestDataProviderInstancio().createBookDto(1).getFirst());
-        }
-        if (clazz.equals(Book.class)) {
-            return clazz.cast(new TestDataProviderInstancio().createBook(1).getFirst());
-        }
-
         throw new IllegalArgumentException("Unsupported class: " + clazz.getName());
     }
 
-    public <T> List<T> ofList(Class<T> clazz, int size) {
+    public <T> List<T> createPublisherList(Class<T> clazz, int size) {
         if (clazz.equals(PublisherEntity.class)) {
-            List<PublisherEntity> sourceList = provider.createPublisherEntity(size);
-            return sourceList.stream()
-                    .map(clazz::cast)
-                    .toList();
-        }
-        if (clazz.equals(PublisherDto.class)) {
-            List<PublisherDto> sourceList = provider.createPublisherDto(size);
-            return sourceList.stream()
+            return provider.createPublisherEntity(size).stream()
                     .map(clazz::cast)
                     .toList();
         }
         if (clazz.equals(Publisher.class)) {
-            List<Publisher> sourceList = provider.createPublisher(size);
-            return sourceList.stream()
+            return provider.createPublisher(size).stream()
                     .map(clazz::cast)
                     .toList();
         }
-        if (clazz.equals(AuthorEntity.class)) {
-            List<AuthorEntity> sourceList = provider.createAuthorEntity(size);
-            return sourceList.stream()
+        if (clazz.equals(PublisherDto.class)) {
+            return provider.createPublisherDto(size).stream()
                     .map(clazz::cast)
                     .toList();
+        }
+        throw new IllegalArgumentException("Unsupported class: " + clazz.getName());
+    }
+
+    public <T> T createAuthor(Class<T> clazz) {
+        if (clazz.equals(AuthorEntity.class)) {
+            return clazz.cast(provider.createAuthorEntity(1).getFirst());
+        }
+        if (clazz.equals(Author.class)) {
+            return clazz.cast(provider.createAuthor(1).getFirst());
         }
         if (clazz.equals(AuthorDto.class)) {
-            List<AuthorDto> sourceList = provider.createAuthorDto(size);
-            return sourceList.stream()
+            return clazz.cast(provider.createAuthorDto(1).getFirst());
+        }
+        throw new IllegalArgumentException("Unsupported class: " + clazz.getName());
+    }
+
+    public <T> List<T> createAuthorList(Class<T> clazz, int size) {
+        if (clazz.equals(AuthorEntity.class)) {
+            return provider.createAuthorEntity(size).stream()
                     .map(clazz::cast)
                     .toList();
         }
         if (clazz.equals(Author.class)) {
-            List<Author> sourceList = provider.createAuthor(size);
-            return sourceList.stream()
+            return provider.createAuthor(size).stream()
                     .map(clazz::cast)
                     .toList();
         }
-        if (clazz.equals(BookEntity.class)) {
-            List<BookEntity> sourceList = provider.createBookEntity(size);
-            return sourceList.stream()
+        if (clazz.equals(AuthorDto.class)) {
+            return provider.createAuthorDto(size).stream()
                     .map(clazz::cast)
                     .toList();
+        }
+        throw new IllegalArgumentException("Unsupported class: " + clazz.getName());
+    }
+
+    public <T> T createBook(Class<T> clazz, boolean withRelations) {
+        if (clazz.equals(BookEntity.class)) {
+            return clazz.cast(provider.createBookEntity(1, withRelations).getFirst());
+        }
+        if (clazz.equals(Book.class)) {
+            return clazz.cast(provider.createBook(1, withRelations).getFirst());
         }
         if (clazz.equals(BookDto.class)) {
-            List<BookDto> sourceList = provider.createBookDto(size);
-            return sourceList.stream()
+            return clazz.cast(provider.createBookDto(1, withRelations).getFirst());
+        }
+        throw new IllegalArgumentException("Unsupported class: " + clazz.getName());
+    }
+
+    public <T> List<T> createBookList(Class<T> clazz, int size, boolean withRelations) {
+        if (clazz.equals(BookEntity.class)) {
+            return provider.createBookEntity(size, withRelations).stream()
                     .map(clazz::cast)
                     .toList();
         }
         if (clazz.equals(Book.class)) {
-            List<Book> sourceList = provider.createBook(size);
-            return sourceList.stream()
+            return provider.createBook(size, withRelations).stream()
+                    .map(clazz::cast)
+                    .toList();
+        }
+        if (clazz.equals(BookDto.class)) {
+            return provider.createBookDto(size, withRelations).stream()
                     .map(clazz::cast)
                     .toList();
         }

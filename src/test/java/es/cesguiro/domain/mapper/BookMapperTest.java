@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BookMapperTest {
 
-    private final static TestDataFactory testDataFactory = new TestDataFactory(null);
+    private final static TestDataFactory testDataFactory = new TestDataFactory();
 
     private static BookEntity buildBookEntity(PublisherEntity publisher, List<AuthorEntity> authors) {
-        BookEntity base = testDataFactory.of(BookEntity.class);
+        BookEntity base = testDataFactory.createBook(BookEntity.class, false);
         return new BookEntity(
                 base.id(), base.isbn(), base.titleEs(), base.titleEn(),
                 base.synopsisEs(), base.synopsisEn(), base.basePrice(),
@@ -34,12 +34,12 @@ class BookMapperTest {
 
     static Stream<BookEntity> validBookEntities() {
         return Stream.of(
-                testDataFactory.of(BookEntity.class),
-                buildBookEntity(null, null),
-                buildBookEntity(testDataFactory.of(PublisherEntity.class), null),
-                buildBookEntity(null, testDataFactory.ofList(AuthorEntity.class, 1)),
-                buildBookEntity(testDataFactory.of(PublisherEntity.class), testDataFactory.ofList(AuthorEntity.class, 1)),
-                buildBookEntity(testDataFactory.of(PublisherEntity.class), testDataFactory.ofList(AuthorEntity.class, 3))
+                buildBookEntity(null, List.of()),
+                buildBookEntity(null, List.of()),
+                buildBookEntity(testDataFactory.createPublisher(PublisherEntity.class), List.of()),
+                buildBookEntity(null, testDataFactory.createAuthorList(AuthorEntity.class, 1)),
+                buildBookEntity(testDataFactory.createPublisher(PublisherEntity.class), testDataFactory.createAuthorList(AuthorEntity.class, 1)),
+                buildBookEntity(testDataFactory.createPublisher(PublisherEntity.class), testDataFactory.createAuthorList(AuthorEntity.class, 3))
         );
     }
 
@@ -82,7 +82,7 @@ class BookMapperTest {
     }
 
     private static Book buildBook(Publisher publisher, List<Author> authors) {
-        Book base = testDataFactory.of(Book.class);
+        Book base = testDataFactory.createBook(Book.class, false);
         return new Book(
                 base.getId(), base.getIsbn(), base.getTitleEs(), base.getTitleEn(),
                 base.getSynopsisEs(), base.getSynopsisEn(), base.getBasePrice(),
@@ -92,11 +92,11 @@ class BookMapperTest {
 
     static Stream<Book> validBooks() {
         return Stream.of(
-                buildBook(null, null),
-                buildBook(testDataFactory.of(Publisher.class), null),
-                buildBook(null, testDataFactory.ofList(Author.class, 1)),
-                buildBook(testDataFactory.of(Publisher.class), testDataFactory.ofList(Author.class, 1)),
-                buildBook(testDataFactory.of(Publisher.class), testDataFactory.ofList(Author.class, 3))
+                buildBook(null, List.of()),
+                buildBook(testDataFactory.createPublisher(Publisher.class), List.of()),
+                buildBook(null, testDataFactory.createAuthorList(Author.class, 1)),
+                buildBook(testDataFactory.createPublisher(Publisher.class), testDataFactory.createAuthorList(Author.class, 1)),
+                buildBook(testDataFactory.createPublisher(Publisher.class), testDataFactory.createAuthorList(Author.class, 3))
         );
     }
 
@@ -122,7 +122,15 @@ class BookMapperTest {
         } else {
             assertNull(result.publisher(), "Publisher should be null");
         }
-        if (book.getAuthors() != null && !book.getAuthors().isEmpty()) {
+        assertAll(
+                () -> assertEquals(book.getAuthors().size(), result.authors().size(), "Authors size should match"),
+                () -> {
+                    for (int i = 0; i < book.getAuthors().size(); i++) {
+                        assertEquals(book.getAuthors().get(i).getId(), result.authors().get(i).id(), "Author ID should match at index " + i);
+                    }
+                }
+        );
+        /*if (book.getAuthors() != null && !book.getAuthors().isEmpty()) {
             assertAll(
                     () -> assertEquals(book.getAuthors().size(), result.authors().size(), "Authors size should match"),
                     () -> {
@@ -133,7 +141,7 @@ class BookMapperTest {
             );
         } else {
             assertNull(result.authors(), "Authors should be null");
-        }
+        }*/
     }
 
     @ParameterizedTest
@@ -159,22 +167,19 @@ class BookMapperTest {
         } else {
             assertNull(result.publisher(), "Publisher should be null");
         }
-        if (book.getAuthors() != null && !book.getAuthors().isEmpty()) {
-            assertAll(
-                    () -> assertEquals(book.getAuthors().size(), result.authors().size(), "Authors size should match"),
-                    () -> {
-                        for (int i = 0; i < book.getAuthors().size(); i++) {
-                            assertEquals(book.getAuthors().get(i).getId(), result.authors().get(i).id(), "Author ID should match at index " + i);
-                        }
+        assertAll(
+                () -> assertEquals(book.getAuthors().size(), result.authors().size(), "Authors size should match"),
+                () -> {
+                    for (int i = 0; i < book.getAuthors().size(); i++) {
+                        assertEquals(book.getAuthors().get(i).getId(), result.authors().get(i).id(), "Author ID should match at index " + i);
                     }
-            );
-        } else {
-            assertEquals(List.of(), result.authors(), "Authors should be empty");
-        }
+                }
+        );
+
     }
 
     private static BookDto buildBookDto(PublisherDto publisher, List<AuthorDto> authors) {
-        BookDto base = testDataFactory.of(BookDto.class);
+        BookDto base = testDataFactory.createBook(BookDto.class, false);
         return new BookDto(
                 base.id(), base.isbn(), base.titleEs(), base.titleEn(),
                 base.synopsisEs(), base.synopsisEn(), base.basePrice(),
@@ -184,11 +189,11 @@ class BookMapperTest {
 
     static Stream<BookDto> validBookDtos() {
         return Stream.of(
-                buildBookDto(null, null),
-                buildBookDto(testDataFactory.of(PublisherDto.class), null),
-                buildBookDto(null, testDataFactory.ofList(AuthorDto.class, 1)),
-                buildBookDto(testDataFactory.of(PublisherDto.class), testDataFactory.ofList(AuthorDto.class, 1)),
-                buildBookDto(testDataFactory.of(PublisherDto.class), testDataFactory.ofList(AuthorDto.class, 3))
+                buildBookDto(null, List.of()),
+                buildBookDto(testDataFactory.createPublisher(PublisherDto.class), List.of()),
+                buildBookDto(null, testDataFactory.createAuthorList(AuthorDto.class, 1)),
+                buildBookDto(testDataFactory.createPublisher(PublisherDto.class), testDataFactory.createAuthorList(AuthorDto.class, 1)),
+                buildBookDto(testDataFactory.createPublisher(PublisherDto.class), testDataFactory.createAuthorList(AuthorDto.class, 3))
         );
     }
 

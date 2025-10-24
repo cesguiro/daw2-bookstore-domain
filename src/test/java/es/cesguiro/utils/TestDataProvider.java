@@ -21,7 +21,7 @@ public interface TestDataProvider {
     List<AuthorEntity> createAuthorEntity(int size);
     List<Author> createAuthor(int size);
     List<AuthorDto> createAuthorDto(int size);
-    List<BookEntity> createBookEntity(int size);
-    List<Book> createBook(int size);
-    List<BookDto> createBookDto(int size);
+    List<BookEntity> createBookEntity(int size, boolean withRelations);
+    List<Book> createBook(int size, boolean withRelations);
+    List<BookDto> createBookDto(int size, boolean withRelations);
 }

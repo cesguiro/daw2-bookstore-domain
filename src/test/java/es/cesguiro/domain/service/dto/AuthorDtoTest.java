@@ -2,6 +2,7 @@ package es.cesguiro.domain.service.dto;
 
 import es.cesguiro.domain.exception.ValidationException;
 import es.cesguiro.domain.validation.spring_validator.DtoValidator;
+import es.cesguiro.utils.TestDataFactory;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AuthorDtoTest {
 
-    private static final AuthorDto VALID_AUTHOR = Instancio.of(AuthorDto.class)
-            .generate(field(AuthorDto.class, "slug"), gen -> gen.text().pattern("#c#c#c-#c#c#c"))
-            .create();
+    private static final TestDataFactory testDataFactory = new TestDataFactory();
+
+    private static final AuthorDto VALID_AUTHOR = testDataFactory.createAuthor(AuthorDto.class);
 
     @Test
     @DisplayName("Create AuthorDto with valid data should not throw ValidationException")

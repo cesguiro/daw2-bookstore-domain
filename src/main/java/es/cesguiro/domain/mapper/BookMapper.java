@@ -110,7 +110,7 @@ public class BookMapper {
             return null;
         }
 
-        Book book = new Book(
+        return new Book(
                 bookDto.id(),
                 bookDto.isbn(),
                 bookDto.titleEs(),
@@ -122,11 +122,7 @@ public class BookMapper {
                 bookDto.cover(),
                 bookDto.publicationDate(),
                 PublisherMapper.getInstance().fromPublisherDtoToPublisher(bookDto.publisher()),
-                null
+                bookDto.authors().stream().map(AuthorMapper.getInstance()::fromAuthorDtoToAuthor).toList()
         );
-        if (bookDto.authors() != null && !bookDto.authors().isEmpty()) {
-            book.setAuthors(bookDto.authors().stream().map(AuthorMapper.getInstance()::fromAuthorDtoToAuthor).toList());
-        }
-        return book;
     }
 }

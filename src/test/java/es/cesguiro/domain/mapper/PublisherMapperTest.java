@@ -14,15 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PublisherMapperTest {
 
-    private final TestDataFactory testDataFactory = new TestDataFactory(null);
+    private final TestDataFactory testDataFactory = new TestDataFactory();
 
     @Test
     @DisplayName("Map PublisherEntity to Publisher should return correct Publisher")
     void fromPublisherEntityToPublisherTest() {
-        /*PublisherEntity publisherEntity = Instancio.of(PublisherEntity.class)
-                .generate(field(PublisherEntity.class,"slug"), gen -> gen.text().pattern("#c#c#c-#c#c#c"))
-                .create();*/
-        PublisherEntity publisherEntity = testDataFactory.of(PublisherEntity.class);
+        PublisherEntity publisherEntity = testDataFactory.createPublisher(PublisherEntity.class);
         var result = PublisherMapper.getInstance().fromPublisherEntityToPublisher(publisherEntity);
         assertAll(
                 () -> assertEquals(publisherEntity.id(), result.getId(), "ID should match"),
@@ -34,10 +31,7 @@ public class PublisherMapperTest {
     @Test
     @DisplayName("Map Publisher to PublisherEntity should return correct PublisherEntity")
     void fromPublisherToPublisherEntityTest() {
-        /*Publisher publisher = Instancio.of(Publisher.class)
-                .generate(field(Publisher.class,"slug"), gen -> gen.text().pattern("#c#c#c-#c#c#c"))
-                .create();*/
-        Publisher publisher = testDataFactory.of(Publisher.class);
+        Publisher publisher = testDataFactory.createPublisher(Publisher.class);
         var result = PublisherMapper.getInstance().fromPublisherToPublisherEntity(publisher);
         assertAll(
                 () -> assertEquals(publisher.getId(), result.id(), "ID should match"),
@@ -49,10 +43,7 @@ public class PublisherMapperTest {
     @Test
     @DisplayName("Map Publisher to PublisherDto should return correct PublisherDto")
     void fromPublishertoPublisherDtoTest() {
-        /*Publisher publisher = Instancio.of(Publisher.class)
-                .generate(field(Publisher.class,"slug"), gen -> gen.text().pattern("#c#c#c-#c#c#c"))
-                .create();*/
-        Publisher publisher = testDataFactory.of(Publisher.class);
+        Publisher publisher = testDataFactory.createPublisher(Publisher.class);
         var result = PublisherMapper.getInstance().fromPublisherToPublisherDto(publisher);
 
         assertAll(
@@ -65,10 +56,7 @@ public class PublisherMapperTest {
     @Test
     @DisplayName("Map PublisherDto to Publisher should return correct Publisher")
     void fromPublisherDtoToPublisherTest() {
-        /*PublisherDto publisherDto = Instancio.of(PublisherDto.class)
-                .generate(field(PublisherDto.class,"slug"), gen -> gen.text().pattern("#c#c#c-#c#c#c"))
-                .create();*/
-        PublisherDto publisherDto = testDataFactory.of(PublisherDto.class);
+        PublisherDto publisherDto = testDataFactory.createPublisher(PublisherDto.class);
         var result = PublisherMapper.getInstance().fromPublisherDtoToPublisher(publisherDto);
 
         assertAll(

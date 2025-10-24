@@ -1,5 +1,6 @@
 package es.cesguiro.domain.service.impl;
 
+import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.mapper.AuthorMapper;
 import es.cesguiro.domain.model.Author;
 import es.cesguiro.domain.repository.AuthorRepository;
@@ -29,11 +30,16 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorDto create(AuthorDto authorDto) {
-        Author author = AuthorMapper.getInstance().fromAuthorDtoToAuthor(authorDto);
-        AuthorEntity authorEntity = AuthorMapper.getInstance().fromAuthorToAuthorEntity(author);
+        if (authorRepository.findBySlug(authorDto.slug()).isPresent()) {
+            throw new BusinessException("Author with slug " + authorDto.slug() + " already exists");
+        }
+        AuthorEntity authorEntity = AuthorMapper.getInstance().fromAuthorToAuthorEntity(
+                AuthorMapper.getInstance().fromAuthorDtoToAuthor(authorDto)
+        );
         AuthorEntity newAuthorEntity = authorRepository.save(authorEntity);
-        Author newAuthor = AuthorMapper.getInstance().fromAuthorEntityToAuthor(newAuthorEntity);
-        return AuthorMapper.getInstance().fromAuthorToAuthorDto(newAuthor);
+        return AuthorMapper.getInstance().fromAuthorToAuthorDto(
+                AuthorMapper.getInstance().fromAuthorEntityToAuthor(newAuthorEntity)
+        );
     }
 
     @Override

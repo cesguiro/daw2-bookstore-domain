@@ -17,6 +17,7 @@ import es.cesguiro.domain.repository.entity.PublisherEntity;
 import es.cesguiro.domain.service.dto.AuthorDto;
 import es.cesguiro.domain.service.dto.BookDto;
 import es.cesguiro.domain.service.dto.PublisherDto;
+import es.cesguiro.utils.TestDataFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,35 +54,26 @@ class BookServiceImplTest {
     @InjectMocks
     private BookServiceImpl bookServiceImpl;
 
-    private static List<Book> books;
-    private static List<BookEntity> bookEntities;
-    private static List<BookDto> bookDtos;
-    private static List<AuthorEntity> authorEntities;
-    private static List<AuthorDto> authorDtos;
-    private static List<PublisherEntity> publisherEntities;
-    private static List<PublisherDto> publisherDtos;
+    private static final TestDataFactory testDataFactory = new TestDataFactory();
 
-    @BeforeAll
-    static void setUp() {
-        BooksDataLoader booksDataLoader = new BooksDataLoader();
-        AuthorsDataLoader authorsDataLoader = new AuthorsDataLoader();
-        PublishersDataLoader publishersDataLoader = new PublishersDataLoader();
-
-        books = booksDataLoader.loadBooksFromCSV();
-        bookEntities = booksDataLoader.loadBookEntitiesFromCSV();
-        bookDtos = booksDataLoader.loadBookDtosFromCSV();
-        authorEntities = authorsDataLoader.loadAuthorEntitiesFromCSV();
-        authorDtos = authorsDataLoader.loadAuthorDtosFromCSV();
-        publisherEntities = publishersDataLoader.loadPublisherEntitiesFromCSV();
-        publisherDtos = publishersDataLoader.loadPublisherDtosFromCSV();
-    }
 
     static Stream<Arguments> provideFindAllArguments() {
         return Stream.of(
-                Arguments.of(1, 10, 2L, bookEntities.subList(0, 2), new Page<>(bookDtos.subList(0, 2), 1, 10, 2)),
-                Arguments.of(1, 3, 3L, bookEntities.subList(0, 3), new Page<>(bookDtos.subList(0, 3), 1, 3, 3)),
-                Arguments.of(1, 3, 9L, bookEntities.subList(0, 3), new Page<>(bookDtos.subList(0, 3), 1, 3, 9)),
-                Arguments.of(2, 3, 5L, bookEntities.subList(3, 5), new Page<>(bookDtos.subList(3, 5), 2, 3, 5))
+                Arguments.of(1, 10, 2L,
+                        testDataFactory.createBookList(BookEntity.class, 2, true),
+                        new Page<>(testDataFactory.createBookList(BookDto.class, 2, true), 1, 5, 10)),
+                Arguments.of(1, 10, 2L,
+                        testDataFactory.createBookList(BookEntity.class, 2, true),
+                        new Page<>(testDataFactory.createBookList(BookDto.class, 2, true), 1, 10, 2)),
+                Arguments.of(1, 3, 3L,
+                        testDataFactory.createBookList(BookEntity.class, 3, true),
+                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true), 1, 3, 3)),
+                Arguments.of(1, 3, 9L,
+                        testDataFactory.createBookList(BookEntity.class, 3, true),
+                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true), 1, 3, 9)),
+                Arguments.of(2, 3, 5L,
+                        testDataFactory.createBookList(BookEntity.class, 3, true),
+                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true), 2, 3, 5))
         );
     }
 
@@ -104,9 +97,9 @@ class BookServiceImplTest {
     @Test
     @DisplayName("getByIsbn should return book when it exists")
     void getByIsbn_ShouldReturnBook_WhenItExists() {
-        String isbn = books.getFirst().getIsbn();
-        when(bookRepository.findByIsbn(isbn)).thenReturn(java.util.Optional.of(bookEntities.getFirst()));
-        BookDto result = bookServiceImpl.getByIsbn(isbn);
+        BookEntity bookEntity = testDataFactory.createBook(BookEntity.class, false);
+        when(bookRepository.findByIsbn(anyString())).thenReturn(java.util.Optional.of(bookEntity));
+        BookDto result = bookServiceImpl.getByIsbn(bookEntity.isbn());
         BookDto expected = bookDtos.getFirst();
         assertAll(
                 () -> assertNotNull(result, "Result should not be null"),

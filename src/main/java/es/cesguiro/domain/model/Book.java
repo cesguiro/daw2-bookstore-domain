@@ -52,7 +52,7 @@ public class Book {
         this.cover = cover;
         this.publicationDate = publicationDate;
         this.publisher = publisher;
-        this.authors = (authors == null) ? new ArrayList<>() : new ArrayList<>(authors);
+        this.authors = (authors.isEmpty()) ? new ArrayList<>() : new ArrayList<>(authors);
     }
 
     public Long getId() {

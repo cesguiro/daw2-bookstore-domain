@@ -8,4 +8,6 @@ public interface AuthorRepository {
 
     AuthorEntity save(AuthorEntity authorEntity);
     Optional<AuthorEntity> findById(Long id);
+
+    Optional<AuthorEntity> findBySlug(String s);
 }

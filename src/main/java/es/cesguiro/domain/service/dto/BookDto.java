@@ -58,10 +58,6 @@ public record BookDto(
         this.cover = cover;
         this.publicationDate = publicationDate;
         this.publisher = publisher;
-        if(authors == null) {
-            this.authors = List.of();
-        } else {
-            this.authors = List.copyOf(authors);
-        }
+        this.authors = authors == null ? List.of() : List.copyOf(authors);
     }
 }

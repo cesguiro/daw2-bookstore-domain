@@ -5,6 +5,8 @@ import es.cesguiro.data.loader.BooksDataLoader;
 import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.model.Author;
 import es.cesguiro.domain.model.Book;
+import es.cesguiro.utils.TestDataFactory;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,20 +20,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BookTest {
 
-    private static List<Book> books;
-    private static List<Author> authors;
 
-    @BeforeAll
-    static void setUp() {
-        BooksDataLoader booksDataLoader = new BooksDataLoader();
-        AuthorsDataLoader authorsDataLoader = new AuthorsDataLoader();
-        books = booksDataLoader.loadBooksFromCSV();
-        authors = authorsDataLoader.loadAuthorsFromCSV();
-    }
+    private static final TestDataFactory testDataFactory = new TestDataFactory();
 
     @ParameterizedTest(name = "{index} => basePrice={0}, discountPercentage={1}, expectedPrice={2}")
     @DisplayName("Calculate final price with various discounts")
@@ -53,33 +48,45 @@ class BookTest {
                 "cover.jpg",
                 LocalDate.of(2023, 1, 1),
                 null,
-                null
+                List.of()
         );
         BigDecimal expected = new BigDecimal(expectedPrice).setScale(2, java.math.RoundingMode.HALF_UP);
         assertEquals(expected, book.getPrice());
     }
 
-    static Stream<Arguments> ProvideAuthorsArguments() {
-        return Stream.of(
-                Arguments.of(books.getFirst(), authors.get(1)),
-                Arguments.of(books.get(24), authors.get(1))
+    private Book createBookWithAuthors(Author author) {
+        Book base = testDataFactory.createBook(Book.class, false);
+        return new Book(
+                base.getId(),
+                base.getIsbn(),
+                base.getTitleEs(),
+                base.getTitleEn(),
+                base.getSynopsisEs(),
+                base.getSynopsisEn(),
+                base.getBasePrice(),
+                base.getDiscountPercentage(),
+                base.getCover(),
+                base.getPublicationDate(),
+                null,
+                List.of(author)
         );
     }
 
-
-    @ParameterizedTest
-    @MethodSource("ProvideAuthorsArguments")
+    @Test
     @DisplayName("Test add Author to Book")
-    void testAddAuthorToBook(Book book, Author author) {
-        book.addAuthor(author);
-        assertTrue(book.getAuthors().contains(author), "Book should contain the added author");
+    void testAddAuthorToBook() {
+        Author author1 = testDataFactory.createAuthor(Author.class);
+        Book book = createBookWithAuthors(author1);
+        Author author2 = testDataFactory.createAuthor(Author.class);
+        book.addAuthor(author2);
+        assertTrue(book.getAuthors().contains(author2), "Book should contain the added author");
     }
 
     @Test
     @DisplayName("Add existing Author to Book")
     void addExistingAuthorToBook() {
-        Book book = books.getFirst();
-        Author author = book.getAuthors().getFirst();
+        Author author = testDataFactory.createAuthor(Author.class);
+        Book book = createBookWithAuthors(author);
         assertThrows(BusinessException.class, () -> book.addAuthor(author));
     }
 

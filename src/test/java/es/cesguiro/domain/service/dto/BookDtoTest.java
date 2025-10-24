@@ -2,6 +2,7 @@ package es.cesguiro.domain.service.dto;
 
 import es.cesguiro.domain.exception.ValidationException;
 import es.cesguiro.domain.validation.spring_validator.DtoValidator;
+import es.cesguiro.utils.TestDataFactory;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,15 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BookDtoTest {
 
-    private static final BookDto VALID_BOOK = Instancio.of(BookDto.class)
-            .generate(field(BookDto.class, "isbn"), gen -> gen.text().pattern("#d#d#d#d#d#d#d#d#d#d#d#d#d"))
-            .generate(field(BookDto.class, "discountPercentage"), gen -> gen.doubles().range(0.0, 100.0))
-            .generate(field(BookDto.class, "publicationDate"), gen -> gen.temporal().localDate().past())
-            //.generate(field(BookDto::authors), gen -> gen.collection().size(3))
-            //.setBlank(field(BookDto::publisher))
-            .ignore(field(BookDto::publisher))
-            .ignore(field(BookDto::authors))
-            .create();
+    private final static TestDataFactory testDataFactory = new TestDataFactory();
+
+    private static final BookDto VALID_BOOK = testDataFactory.createBook(BookDto.class, false);
 
     @Test
     @DisplayName("Create BookDto with valid data should not throw ValidationException")

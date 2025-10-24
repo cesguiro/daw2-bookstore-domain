@@ -6,6 +6,7 @@ import es.cesguiro.domain.mapper.AuthorMapper;
 import es.cesguiro.domain.model.Author;
 import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.service.dto.AuthorDto;
+import es.cesguiro.utils.TestDataFactory;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -18,12 +19,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AuthorMapperTest {
 
+    private static final TestDataFactory testDataFactory = new TestDataFactory();
+
     @Test
     @DisplayName("Map AuthorEntity to Author should return correct Author")
     void fromAuthorEntityToAuthorTest() {
-        AuthorEntity authorEntity = Instancio.of(AuthorEntity.class)
-                .generate(field(AuthorEntity.class, "slug"), gen -> gen.text().pattern("#c#c#c-#c#c#c"))
-                .create();
+        AuthorEntity authorEntity = testDataFactory.createAuthor(AuthorEntity.class);
         var result = AuthorMapper.getInstance().fromAuthorEntityToAuthor(authorEntity);
         assertAll(
                 () -> assertEquals(authorEntity.id(), result.getId(), "ID should match"),
@@ -40,9 +41,7 @@ class AuthorMapperTest {
     @Test
     @DisplayName("Map Author to AuthorEntity should return correct AuthorEntity")
     void fromAuthorToAuthorEntityTest() {
-        Author author = Instancio.of(Author.class)
-                .generate(field(Author.class, "slug"), gen -> gen.text().pattern("#c#c#c-#c#c#c"))
-                .create();
+        Author author = testDataFactory.createAuthor(Author.class);
         var result = AuthorMapper.getInstance().fromAuthorToAuthorEntity(author);
         assertAll(
                 () -> assertEquals(author.getId(), result.id(), "ID should match"),
@@ -58,10 +57,8 @@ class AuthorMapperTest {
 
     @Test
     @DisplayName("Map Author to AuthorDto should return correct AuthorDto")
-    void fromAuthortoAuthorDtoTest() {
-        Author author = Instancio.of(Author.class)
-                .generate(field(Author.class, "slug"), gen -> gen.text().pattern("#c#c#c-#c#c#c"))
-                .create();
+    void fromAuthorToAuthorDtoTest() {
+        Author author = testDataFactory.createAuthor(Author.class);
         var result = AuthorMapper.getInstance().fromAuthorToAuthorDto(author);
         assertAll(
                 () -> assertEquals(author.getId(), result.id(), "ID should match"),
@@ -78,9 +75,7 @@ class AuthorMapperTest {
     @Test
     @DisplayName("Map AuthorDto to Author should return correct Author")
     void fromAuthorDtoToAuthorTest() {
-        AuthorDto authorDto = Instancio.of(AuthorDto.class)
-                .generate(field(AuthorDto.class, "slug"), gen -> gen.text().pattern("#c#c#c-#c#c#c"))
-                .create();
+        AuthorDto authorDto = testDataFactory.createAuthor(AuthorDto.class);
         var result = AuthorMapper.getInstance().fromAuthorDtoToAuthor(authorDto);
         assertAll(
                 () -> assertEquals(authorDto.id(), result.getId(), "ID should match"),
