@@ -7,9 +7,11 @@ import es.cesguiro.domain.service.dto.BookDto;
 import es.cesguiro.domain.service.dto.PublisherDto;
 import es.cesguiro.utils.InstancioModel;
 import org.instancio.Instancio;
+import org.instancio.Model;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
@@ -20,7 +22,62 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BookMapperTest {
 
-    static Stream<Arguments> argumentsFromBookEntityToBook() {
+    static Stream<Arguments> argumentsForMapperTests(Model<?> from, Model<?> to) {
+        return Stream.of(
+                Arguments.of(
+                        Instancio.of(from)
+                                .set(field(BookEntity::authors), List.of())
+                                .ignore(field(BookEntity::publisher))
+                                .lenient()
+                                .withSeed(1)
+                                .create(),
+                        Instancio.of(to)
+                                .set(field(Book::getAuthors), List.of())
+                                .ignore(field(Book::getPublisher))
+                                .ignore(field(Book::getPrice))
+                                .lenient()
+                                .withSeed(1)
+                                .create()
+                ),
+                Arguments.of(
+                        Instancio.of(from)
+                                .ignore(field(BookEntity::publisher))
+                                .lenient()
+                                .withSeed(2)
+                                .create(),
+                        Instancio.of(to)
+                                .ignore(field(Book::getPublisher))
+                                .ignore(field(Book::getPrice))
+                                .lenient()
+                                .withSeed(2)
+                                .create()
+                ),
+                Arguments.of(
+                        Instancio.of(from)
+                                .set(field(BookEntity::authors), List.of())
+                                .lenient()
+                                .withSeed(3)
+                                .create(),
+                        Instancio.of(to)
+                                .set(field(Book::getAuthors), List.of())
+                                .ignore(field(Book::getPrice))
+                                .lenient()
+                                .withSeed(3)
+                                .create()
+                ),
+                Arguments.of(
+                        Instancio.of(from)
+                                .withSeed(4)
+                                .create(),
+                        Instancio.of(to)
+                                .ignore(field(Book::getPrice))
+                                .withSeed(4)
+                                .create()
+                )
+        );
+    }
+
+    /*static Stream<Arguments> argumentsFromBookEntityToBook() {
         return Stream.of(
                 Arguments.of(
                         Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
@@ -73,11 +130,12 @@ class BookMapperTest {
                                 .create()
                 )
         );
-    }
+    }*/
 
 
     @ParameterizedTest
-    @MethodSource("argumentsFromBookEntityToBook")
+    @MethodSource("argumentsForMapperTests")
+    @ArgumentsSource(InstancioModel.BOOK_ENTITY_MODEL, InstancioModel.BOOK_MODEL)
     @DisplayName("Map BookEntity to Book should return correct Book")
     void fromBookEntityToBookTest(BookEntity bookEntity, Book expected) {
         Book result = BookMapper.getInstance().fromBookEntityToBook(bookEntity);
