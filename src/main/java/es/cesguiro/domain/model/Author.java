@@ -1,5 +1,7 @@
 package es.cesguiro.domain.model;
 
+import java.util.Objects;
+
 public class Author {
 
     private Long id;
@@ -80,5 +82,16 @@ public class Author {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Author author)) return false;
+        return Objects.equals(id, author.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

@@ -4,66 +4,65 @@ package es.cesguiro.domain.mapper;
 import es.cesguiro.domain.model.Publisher;
 import es.cesguiro.domain.repository.entity.PublisherEntity;
 import es.cesguiro.domain.service.dto.PublisherDto;
+import es.cesguiro.utils.InstancioModel;
 import es.cesguiro.utils.TestDataFactory;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublisherMapperTest {
 
-    private final TestDataFactory testDataFactory = new TestDataFactory();
-    private static final int SEED_VALUE = 0;
-
     @Test
     @DisplayName("Map PublisherEntity to Publisher should return correct Publisher")
     void fromPublisherEntityToPublisherTest() {
-        PublisherEntity publisherEntity = testDataFactory.createPublisher(PublisherEntity.class, SEED_VALUE);
-        var result = PublisherMapper.getInstance().fromPublisherEntityToPublisher(publisherEntity);
+        PublisherEntity publisherEntity = Instancio.of(InstancioModel.PUBLISHER_ENTITY_MODEL).withSeed(39).create();
+        Publisher expected = Instancio.of(InstancioModel.PUBLISHER_MODEL).withSeed(39).create();
+        Publisher result = PublisherMapper.getInstance().fromPublisherEntityToPublisher(publisherEntity);
         assertAll(
-                () -> assertEquals(publisherEntity.id(), result.getId(), "ID should match"),
-                () -> assertEquals(publisherEntity.name(), result.getName(), "Name should match"),
-                () -> assertEquals(publisherEntity.slug(), result.getSlug(), "Slug should match")
+                () -> assertEquals(expected.getId(), result.getId(), "ID should match"),
+                () -> assertEquals(expected.getName(), result.getName(), "Name should match"),
+                () -> assertEquals(expected.getSlug(), result.getSlug(), "Slug should match")
         );
     }
 
     @Test
     @DisplayName("Map Publisher to PublisherEntity should return correct PublisherEntity")
     void fromPublisherToPublisherEntityTest() {
-        Publisher publisher = testDataFactory.createPublisher(Publisher.class, SEED_VALUE);
-        var result = PublisherMapper.getInstance().fromPublisherToPublisherEntity(publisher);
+        Publisher publisher = Instancio.of(InstancioModel.PUBLISHER_MODEL).withSeed(39).create();
+        PublisherEntity expected = Instancio.of(InstancioModel.PUBLISHER_ENTITY_MODEL).withSeed(39).create();
+        PublisherEntity result = PublisherMapper.getInstance().fromPublisherToPublisherEntity(publisher);
         assertAll(
-                () -> assertEquals(publisher.getId(), result.id(), "ID should match"),
-                () -> assertEquals(publisher.getName(), result.name(), "Name should match"),
-                () -> assertEquals(publisher.getSlug(), result.slug(), "Slug should match")
+                () -> assertEquals(expected.id(), result.id(), "ID should match"),
+                () -> assertEquals(expected.name(), result.name(), "Name should match"),
+                () -> assertEquals(expected.slug(), result.slug(), "Slug should match")
         );
     }
 
     @Test
     @DisplayName("Map Publisher to PublisherDto should return correct PublisherDto")
     void fromPublishertoPublisherDtoTest() {
-        Publisher publisher = testDataFactory.createPublisher(Publisher.class, SEED_VALUE);
-        var result = PublisherMapper.getInstance().fromPublisherToPublisherDto(publisher);
-
+        Publisher publisher = Instancio.of(InstancioModel.PUBLISHER_MODEL).withSeed(39).create();
+        PublisherDto expected = Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL).withSeed(39).create();
+        PublisherDto result = PublisherMapper.getInstance().fromPublisherToPublisherDto(publisher);
         assertAll(
-                () -> assertEquals(publisher.getId(), result.id(), "ID should match"),
-                () -> assertEquals(publisher.getName(), result.name(), "Name should match"),
-                () -> assertEquals(publisher.getSlug(), result.slug(), "Slug should match")
+                () -> assertEquals(expected.id(), result.id(), "ID should match"),
+                () -> assertEquals(expected.name(), result.name(), "Name should match"),
+                () -> assertEquals(expected.slug(), result.slug(), "Slug should match")
         );
     }
 
     @Test
     @DisplayName("Map PublisherDto to Publisher should return correct Publisher")
     void fromPublisherDtoToPublisherTest() {
-        PublisherDto publisherDto = testDataFactory.createPublisher(PublisherDto.class, SEED_VALUE);
-        var result = PublisherMapper.getInstance().fromPublisherDtoToPublisher(publisherDto);
-
+        PublisherDto publisherDto = Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL).withSeed(39).create();
+        Publisher expected = Instancio.of(InstancioModel.PUBLISHER_MODEL).withSeed(39).create();
+        Publisher result = PublisherMapper.getInstance().fromPublisherDtoToPublisher(publisherDto);
         assertAll(
-                () -> assertEquals(publisherDto.id(), result.getId(), "ID should match"),
-                () -> assertEquals(publisherDto.name(), result.getName(), "Name should match"),
-                () -> assertEquals(publisherDto.slug(), result.getSlug(), "Slug should match")
+                () -> assertEquals(expected.getId(), result.getId(), "ID should match"),
+                () -> assertEquals(expected.getName(), result.getName(), "Name should match"),
+                () -> assertEquals(expected.getSlug(), result.getSlug(), "Slug should match")
         );
     }
 

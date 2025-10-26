@@ -6,6 +6,7 @@ import es.cesguiro.domain.mapper.AuthorMapper;
 import es.cesguiro.domain.model.Author;
 import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.service.dto.AuthorDto;
+import es.cesguiro.utils.InstancioModel;
 import es.cesguiro.utils.TestDataFactory;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,74 +20,76 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AuthorMapperTest {
 
-    private static final TestDataFactory testDataFactory = new TestDataFactory();
-    private static final int SEED_VALUE = 0;
 
     @Test
     @DisplayName("Map AuthorEntity to Author should return correct Author")
     void fromAuthorEntityToAuthorTest() {
-        AuthorEntity authorEntity = testDataFactory.createAuthor(AuthorEntity.class, SEED_VALUE);
-        var result = AuthorMapper.getInstance().fromAuthorEntityToAuthor(authorEntity);
+        AuthorEntity authorEntity = Instancio.of(InstancioModel.AUTHOR_ENTITY_MODEL).withSeed(39).create();
+        Author expected = Instancio.of(InstancioModel.AUTHOR_MODEL).withSeed(39).create();
+        Author result = AuthorMapper.getInstance().fromAuthorEntityToAuthor(authorEntity);
         assertAll(
-                () -> assertEquals(authorEntity.id(), result.getId(), "ID should match"),
-                () -> assertEquals(authorEntity.name(), result.getName(), "Name should match"),
-                () -> assertEquals(authorEntity.nationality(), result.getNationality(), "Nationality should match"),
-                () -> assertEquals(authorEntity.biographyEs(), result.getBiographyEs(), "BiographyEs should match"),
-                () -> assertEquals(authorEntity.biographyEn(), result.getBiographyEn(), "BiographyEn should match"),
-                () -> assertEquals(authorEntity.birthYear(), result.getBirthYear(), "BirthYear should match"),
-                () -> assertEquals(authorEntity.deathYear(), result.getDeathYear(), "DeathYear should match"),
-                () -> assertEquals(authorEntity.slug(), result.getSlug(), "Slug should match")
+                () -> assertEquals(expected.getId(), result.getId(), "ID should match"),
+                () -> assertEquals(expected.getName(), result.getName(), "Name should match"),
+                () -> assertEquals(expected.getNationality(), result.getNationality(), "Nationality should match"),
+                () -> assertEquals(expected.getBiographyEs(), result.getBiographyEs(), "BiographyEs should match"),
+                () -> assertEquals(expected.getBiographyEn(), result.getBiographyEn(), "BiographyEn should match"),
+                () -> assertEquals(expected.getBirthYear(), result.getBirthYear(), "BirthYear should match"),
+                () -> assertEquals(expected.getDeathYear(), result.getDeathYear(), "DeathYear should match"),
+                () -> assertEquals(expected.getSlug(), result.getSlug(), "Slug should match")
         );
     }
 
     @Test
     @DisplayName("Map Author to AuthorEntity should return correct AuthorEntity")
     void fromAuthorToAuthorEntityTest() {
-        Author author = testDataFactory.createAuthor(Author.class, SEED_VALUE);
-        var result = AuthorMapper.getInstance().fromAuthorToAuthorEntity(author);
+        Author author = Instancio.of(InstancioModel.AUTHOR_MODEL).withSeed(39).create();
+        AuthorEntity expected = Instancio.of(InstancioModel.AUTHOR_ENTITY_MODEL).withSeed(39).create();
+        AuthorEntity result = AuthorMapper.getInstance().fromAuthorToAuthorEntity(author);
         assertAll(
-                () -> assertEquals(author.getId(), result.id(), "ID should match"),
-                () -> assertEquals(author.getName(), result.name(), "Name should match"),
-                () -> assertEquals(author.getNationality(), result.nationality(), "Nationality should match"),
-                () -> assertEquals(author.getBiographyEs(), result.biographyEs(), "BiographyEs should match"),
-                () -> assertEquals(author.getBiographyEn(), result.biographyEn(), "BiographyEn should match"),
-                () -> assertEquals(author.getBirthYear(), result.birthYear(), "BirthYear should match"),
-                () -> assertEquals(author.getDeathYear(), result.deathYear(), "DeathYear should match"),
-                () -> assertEquals(author.getSlug(), result.slug(), "Slug should match")
+                () -> assertEquals(expected.id(), result.id(), "ID should match"),
+                () -> assertEquals(expected.name(), result.name(), "Name should match"),
+                () -> assertEquals(expected.nationality(), result.nationality(), "Nationality should match"),
+                () -> assertEquals(expected.biographyEs(), result.biographyEs(), "BiographyEs should match"),
+                () -> assertEquals(expected.biographyEn(), result.biographyEn(), "BiographyEn should match"),
+                () -> assertEquals(expected.birthYear(), result.birthYear(), "BirthYear should match"),
+                () -> assertEquals(expected.deathYear(), result.deathYear(), "DeathYear should match"),
+                () -> assertEquals(expected.slug(), result.slug(), "Slug should match")
         );
     }
 
     @Test
     @DisplayName("Map Author to AuthorDto should return correct AuthorDto")
     void fromAuthorToAuthorDtoTest() {
-        Author author = testDataFactory.createAuthor(Author.class, SEED_VALUE);
-        var result = AuthorMapper.getInstance().fromAuthorToAuthorDto(author);
+        Author author = Instancio.of(InstancioModel.AUTHOR_MODEL).withSeed(39).create();
+        AuthorDto expected = Instancio.of(InstancioModel.AUTHOR_DTO_MODEL).withSeed(39).create();
+        AuthorDto result = AuthorMapper.getInstance().fromAuthorToAuthorDto(author);
         assertAll(
-                () -> assertEquals(author.getId(), result.id(), "ID should match"),
-                () -> assertEquals(author.getName(), result.name(), "Name should match"),
-                () -> assertEquals(author.getNationality(), result.nationality(), "Nationality should match"),
-                () -> assertEquals(author.getBiographyEs(), result.biographyEs(), "BiographyEs should match"),
-                () -> assertEquals(author.getBiographyEn(), result.biographyEn(), "BiographyEn should match"),
-                () -> assertEquals(author.getBirthYear(), result.birthYear(), "BirthYear should match"),
-                () -> assertEquals(author.getDeathYear(), result.deathYear(), "DeathYear should match"),
-                () -> assertEquals(author.getSlug(), result.slug(), "Slug should match")
+                () -> assertEquals(expected.id(), result.id(), "ID should match"),
+                () -> assertEquals(expected.name(), result.name(), "Name should match"),
+                () -> assertEquals(expected.nationality(), result.nationality(), "Nationality should match"),
+                () -> assertEquals(expected.biographyEs(), result.biographyEs(), "BiographyEs should match"),
+                () -> assertEquals(expected.biographyEn(), result.biographyEn(), "BiographyEn should match"),
+                () -> assertEquals(expected.birthYear(), result.birthYear(), "BirthYear should match"),
+                () -> assertEquals(expected.deathYear(), result.deathYear(), "DeathYear should match"),
+                () -> assertEquals(expected.slug(), result.slug(), "Slug should match")
         );
     }
 
     @Test
     @DisplayName("Map AuthorDto to Author should return correct Author")
     void fromAuthorDtoToAuthorTest() {
-        AuthorDto authorDto = testDataFactory.createAuthor(AuthorDto.class, SEED_VALUE);
-        var result = AuthorMapper.getInstance().fromAuthorDtoToAuthor(authorDto);
+        AuthorDto authorDto = Instancio.of(InstancioModel.AUTHOR_DTO_MODEL).withSeed(39).create();
+        Author expected = Instancio.of(InstancioModel.AUTHOR_MODEL).withSeed(39).create();
+        Author result = AuthorMapper.getInstance().fromAuthorDtoToAuthor(authorDto);
         assertAll(
-                () -> assertEquals(authorDto.id(), result.getId(), "ID should match"),
-                () -> assertEquals(authorDto.name(), result.getName(), "Name should match"),
-                () -> assertEquals(authorDto.nationality(), result.getNationality(), "Nationality should match"),
-                () -> assertEquals(authorDto.biographyEs(), result.getBiographyEs(), "BiographyEs should match"),
-                () -> assertEquals(authorDto.biographyEn(), result.getBiographyEn(), "BiographyEn should match"),
-                () -> assertEquals(authorDto.birthYear(), result.getBirthYear(), "BirthYear should match"),
-                () -> assertEquals(authorDto.deathYear(), result.getDeathYear(), "DeathYear should match"),
-                () -> assertEquals(authorDto.slug(), result.getSlug(), "Slug should match")
+                () -> assertEquals(expected.getId(), result.getId(), "ID should match"),
+                () -> assertEquals(expected.getName(), result.getName(), "Name should match"),
+                () -> assertEquals(expected.getNationality(), result.getNationality(), "Nationality should match"),
+                () -> assertEquals(expected.getBiographyEs(), result.getBiographyEs(), "BiographyEs should match"),
+                () -> assertEquals(expected.getBiographyEn(), result.getBiographyEn(), "BiographyEn should match"),
+                () -> assertEquals(expected.getBirthYear(), result.getBirthYear(), "BirthYear should match"),
+                () -> assertEquals(expected.getDeathYear(), result.getDeathYear(), "DeathYear should match"),
+                () -> assertEquals(expected.getSlug(), result.getSlug(), "Slug should match")
         );
     }
 
