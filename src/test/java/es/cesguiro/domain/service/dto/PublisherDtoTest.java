@@ -2,7 +2,7 @@ package es.cesguiro.domain.service.dto;
 
 import es.cesguiro.domain.exception.ValidationException;
 import es.cesguiro.domain.validation.spring_validator.DtoValidator;
-import es.cesguiro.utils.TestDataFactory;
+import es.cesguiro.utils.InstancioModel;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,27 +16,52 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PublisherDtoTest {
 
-    private final static TestDataFactory testDataFactory = new TestDataFactory();
-    private static final int SEED_VALUE = 0;
-
-    private static final PublisherDto VALID_PUBLISHER = testDataFactory.createPublisher(PublisherDto.class, SEED_VALUE);
 
     @Test
     @DisplayName("Create publisherDto with valid data should not throw ValidationException")
     void createPublisherDto_WithValidData_ShouldNotThrowException() {
-        assertDoesNotThrow(() -> DtoValidator.validate(VALID_PUBLISHER));
+        PublisherDto result = Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL).create();
+        assertDoesNotThrow(() -> DtoValidator.validate(result));
     }
 
     static Stream<PublisherDto> invalidPublishers() {
         return Stream.of(
-                new PublisherDto(VALID_PUBLISHER.id(), null, VALID_PUBLISHER.slug()),
-                new PublisherDto(VALID_PUBLISHER.id(), "", VALID_PUBLISHER.slug()),
-                new PublisherDto(VALID_PUBLISHER.id(), VALID_PUBLISHER.name(), null),
-                new PublisherDto(VALID_PUBLISHER.id(), VALID_PUBLISHER.name(), ""),
-                new PublisherDto(VALID_PUBLISHER.id(), VALID_PUBLISHER.name(), "  "),
-                new PublisherDto(VALID_PUBLISHER.id(), VALID_PUBLISHER.name(), "invalid slug"),
-                new PublisherDto(VALID_PUBLISHER.id(), VALID_PUBLISHER.name(), "invalid_slug!"),
-                new PublisherDto(VALID_PUBLISHER.id(), VALID_PUBLISHER.name(), "sss--sss")
+                Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL)
+                        .ignore(field(PublisherDto::name))
+                        .lenient()
+                        .create(),
+                Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL)
+                        .set(field(PublisherDto::name), "")
+                        .lenient()
+                        .create(),
+                Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL)
+                        .set(field(PublisherDto::name), "   ")
+                        .lenient()
+                        .create(),
+                Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL)
+                        .ignore(field(PublisherDto::slug))
+                        .lenient()
+                        .create(),
+                Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL)
+                        .set(field(PublisherDto::slug), "")
+                        .lenient()
+                        .create(),
+                Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL)
+                        .set(field(PublisherDto::slug), "    ")
+                        .lenient()
+                        .create(),
+                Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL)
+                        .set(field(PublisherDto::slug), "invalid slug")
+                        .lenient()
+                        .create(),
+                Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL)
+                        .set(field(PublisherDto::slug), "invalid_slug!")
+                        .lenient()
+                        .create(),
+                Instancio.of(InstancioModel.PUBLISHER_DTO_MODEL)
+                        .set(field(PublisherDto::slug), "sss--sss")
+                        .lenient()
+                        .create()
         );
     }
     @ParameterizedTest

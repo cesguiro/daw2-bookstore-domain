@@ -1,26 +1,15 @@
 package es.cesguiro.domain.service.impl;
 
-import es.cesguiro.data.loader.AuthorsDataLoader;
-import es.cesguiro.data.loader.BooksDataLoader;
-import es.cesguiro.data.loader.PublishersDataLoader;
-import es.cesguiro.domain.exception.BusinessException;
-import es.cesguiro.domain.exception.ResourceNotFoundException;
-import es.cesguiro.domain.exception.ValidationException;
-import es.cesguiro.domain.model.Book;
 import es.cesguiro.domain.model.Page;
 import es.cesguiro.domain.repository.AuthorRepository;
 import es.cesguiro.domain.repository.BookRepository;
 import es.cesguiro.domain.repository.PublisherRepository;
-import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.repository.entity.BookEntity;
-import es.cesguiro.domain.repository.entity.PublisherEntity;
-import es.cesguiro.domain.service.dto.AuthorDto;
 import es.cesguiro.domain.service.dto.BookDto;
-import es.cesguiro.domain.service.dto.PublisherDto;
-import es.cesguiro.utils.TestDataFactory;
-import org.junit.jupiter.api.BeforeAll;
+import es.cesguiro.utils.InstancioModel;
+import org.instancio.Instancio;
+import static org.instancio.Select.field;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -29,14 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,26 +39,24 @@ class BookServiceImplTest {
     @InjectMocks
     private BookServiceImpl bookServiceImpl;
 
-    private static final TestDataFactory testDataFactory = new TestDataFactory();
-
 
     static Stream<Arguments> provideFindAllArguments() {
         return Stream.of(
                 Arguments.of(1, 5, 2L,
-                        testDataFactory.createBookList(BookEntity.class, 2, true, 456),
-                        new Page<>(testDataFactory.createBookList(BookDto.class, 2, true, 456), 1, 5, 2)),
+                        Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL).size(2).withSeed(10).create(),
+                        new Page<>(Instancio.ofList(InstancioModel.BOOK_DTO_MODEL).size(2).withSeed(10).ignore(field(BookDto::price)).lenient().create(), 1, 5, 2)),
                 Arguments.of(1, 10, 2L,
-                        testDataFactory.createBookList(BookEntity.class, 2, true, 123),
-                        new Page<>(testDataFactory.createBookList(BookDto.class, 2, true, 123), 1, 10, 2)),
+                        Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL).size(2).withSeed(20).create(),
+                        new Page<>(Instancio.ofList(InstancioModel.BOOK_DTO_MODEL).size(2).withSeed(20).ignore(field(BookDto::price)).lenient().create(), 1, 10, 2)),
                 Arguments.of(1, 3, 3L,
-                        testDataFactory.createBookList(BookEntity.class, 3, true, 789),
-                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true, 789), 1, 3, 3)),
+                        Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL).size(3).withSeed(30).create(),
+                        new Page<>(Instancio.ofList(InstancioModel.BOOK_DTO_MODEL).size(3).withSeed(30).ignore(field(BookDto::price)).lenient().create(), 1, 3, 3)),
                 Arguments.of(1, 3, 9L,
-                        testDataFactory.createBookList(BookEntity.class, 3, true, 321),
-                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true, 321), 1, 3, 9)),
+                        Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL).size(3).withSeed(40).create(),
+                        new Page<>(Instancio.ofList(InstancioModel.BOOK_DTO_MODEL).size(3).withSeed(40).ignore(field(BookDto::price)).lenient().create(), 1, 3, 9)),
                 Arguments.of(2, 3, 5L,
-                        testDataFactory.createBookList(BookEntity.class, 3, true, 654),
-                        new Page<>(testDataFactory.createBookList(BookDto.class, 3, true, 654), 2, 3, 5))
+                        Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL).size(3).withSeed(50).create(),
+                        new Page<>(Instancio.ofList(InstancioModel.BOOK_DTO_MODEL).size(3).withSeed(50).ignore(field(BookDto::price)).lenient().create(), 2, 3, 5))
         );
     }
 

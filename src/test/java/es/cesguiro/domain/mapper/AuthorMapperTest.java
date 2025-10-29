@@ -1,19 +1,12 @@
 package es.cesguiro.domain.mapper;
 
-import es.cesguiro.data.loader.AuthorsDataLoader;
-import es.cesguiro.domain.exception.BusinessException;
-import es.cesguiro.domain.mapper.AuthorMapper;
 import es.cesguiro.domain.model.Author;
 import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.service.dto.AuthorDto;
 import es.cesguiro.utils.InstancioModel;
-import es.cesguiro.utils.TestDataFactory;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.*;

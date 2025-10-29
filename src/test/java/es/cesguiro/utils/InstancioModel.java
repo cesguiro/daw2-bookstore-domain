@@ -76,7 +76,6 @@ public class InstancioModel {
             .generate(field(BookDto::isbn), gen -> gen.text().pattern(ISBN_PATTERN))
             .generate(field(BookDto::discountPercentage), gen -> gen.math().bigDecimal().range(new BigDecimal("0.00"), new BigDecimal("100.00")))
             .generate(field(BookDto::publicationDate), gen -> gen.temporal().localDate().past())
-            .set(field(BookDto.class, "price"), 0L)
             .setModel(field(BookDto::publisher), PUBLISHER_DTO_MODEL)
             .setModel(field(BookDto::authors), AUTHOR_DTO_LIST_MODEL)
             .toModel();
