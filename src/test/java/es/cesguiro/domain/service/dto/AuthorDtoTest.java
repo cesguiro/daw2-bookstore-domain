@@ -2,7 +2,7 @@ package es.cesguiro.domain.service.dto;
 
 import es.cesguiro.domain.exception.ValidationException;
 import es.cesguiro.domain.validation.spring_validator.DtoValidator;
-import es.cesguiro.utils.InstancioModel;
+import es.cesguiro.util.InstancioModel;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -4,7 +4,7 @@ package es.cesguiro.domain.mapper;
 import es.cesguiro.domain.model.Publisher;
 import es.cesguiro.domain.repository.entity.PublisherEntity;
 import es.cesguiro.domain.service.dto.PublisherDto;
-import es.cesguiro.utils.InstancioModel;
+import es.cesguiro.util.InstancioModel;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,7 @@ package es.cesguiro.domain.mapper;
 import es.cesguiro.domain.model.Author;
 import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.service.dto.AuthorDto;
-import es.cesguiro.utils.InstancioModel;
+import es.cesguiro.util.InstancioModel;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

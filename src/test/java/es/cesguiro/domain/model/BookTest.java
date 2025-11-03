@@ -1,7 +1,7 @@
 package es.cesguiro.domain.model;
 
 import es.cesguiro.domain.exception.BusinessException;
-import es.cesguiro.utils.InstancioModel;
+import es.cesguiro.util.InstancioModel;
 import org.instancio.Instancio;
 import org.instancio.junit.InstancioExtension;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package es.cesguiro.utils;
+package es.cesguiro.util;
 
 import es.cesguiro.domain.model.Author;
 import es.cesguiro.domain.model.Book;
