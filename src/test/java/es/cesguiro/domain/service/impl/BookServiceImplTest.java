@@ -1,12 +1,16 @@
 package es.cesguiro.domain.service.impl;
 
+import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.exception.ResourceNotFoundException;
 import es.cesguiro.domain.model.Page;
 import es.cesguiro.domain.repository.AuthorRepository;
 import es.cesguiro.domain.repository.BookRepository;
 import es.cesguiro.domain.repository.PublisherRepository;
 import es.cesguiro.domain.repository.entity.BookEntity;
+import es.cesguiro.domain.repository.entity.PublisherEntity;
+import es.cesguiro.domain.service.dto.AuthorDto;
 import es.cesguiro.domain.service.dto.BookDto;
+import es.cesguiro.domain.service.dto.PublisherDto;
 import es.cesguiro.util.InstancioModel;
 import org.instancio.Instancio;
 import static org.instancio.Select.field;
@@ -20,13 +24,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -219,7 +223,7 @@ class BookServiceImplTest {
             when(authorRepository.findById(newBookDto.authors().get(i).id()))
                     .thenReturn(Optional.of(newBookEntity.authors().get(i)));
         }
-        when(bookRepository.save(newBookEntity)).thenReturn(newBookEntity);
+        when(bookRepository.save(any())).thenReturn(newBookEntity);
 
         BookDto expected = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
                 .withSeed(50)
@@ -240,15 +244,22 @@ class BookServiceImplTest {
     }
 
     // test create book with existing isbn
-    /*@Test
+    @Test
     @DisplayName("createBook should throw exception when ISBN already exists")
     void createBook_ShouldThrowException_WhenIsbnAlreadyExists() {
-        BookDto existingBookDto = bookDtos.getFirst();
-        BookEntity existingBookEntity = bookEntities.getFirst();
+        BookDto newBookDto = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
+                .withSeed(60)
+                .ignore(field(BookDto::id))
+                .ignore(field(BookDto::price))
+                .lenient()
+                .create();
+        BookEntity existingBookEntity = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
+                .withSeed(60)
+                .create();
 
-        when(bookRepository.findByIsbn(existingBookDto.isbn())).thenReturn(Optional.of(existingBookEntity));
+        when(bookRepository.findByIsbn(any())).thenReturn(Optional.of(existingBookEntity));
 
-        assertThrows(BusinessException.class, () -> bookServiceImpl.create(existingBookDto));
+        assertThrows(BusinessException.class, () -> bookServiceImpl.create(newBookDto));
     }
 
 
@@ -256,165 +267,113 @@ class BookServiceImplTest {
     @Test
     @DisplayName("createBook should throw exception when publisher does not exist")
     void createBook_ShouldThrowException_WhenPublisherDoesNotExist() {
-        PublisherDto nonExistingPublisher = new PublisherDto(99L, "Non existing Publisher", "non-existing-publisher");
-        BookDto bookDtoWithNonExistingPublisher = new BookDto(
-                null,
-                "9999999999999",
-                "Book Title ES",
-                "Book Title EN",
-                "Book Synopsis ES",
-                "Book Synopsis EN",
-                new BigDecimal("19.99"),
-                10.0,
-                null,
-                "http://example.com/bookcover.jpg",
-                LocalDate.of(2024, 1, 1),
-                nonExistingPublisher,
-                List.of(authorDtos.getFirst())
-        );
 
-        when(bookRepository.findByIsbn(bookDtoWithNonExistingPublisher.isbn())).thenReturn(Optional.empty());
-        when(publisherRepository.findById(nonExistingPublisher.id())).thenReturn(Optional.empty());
+        BookDto newBookDto = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
+                .withSeed(70)
+                .ignore(field(BookDto::id))
+                .ignore(field(BookDto::price))
+                .lenient()
+                .create();
 
-        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.create(bookDtoWithNonExistingPublisher));
+        when(bookRepository.findByIsbn(any())).thenReturn(Optional.empty());
+        when(publisherRepository.findById(any())).thenReturn(Optional.empty());
+
+
+        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.create(newBookDto));
     }
 
     @Test
     @DisplayName("createBook should throw exception when an author does not exist")
     void createBook_ShouldThrowException_WhenAnAuthorDoesNotExist() {
-        AuthorDto nonExistingAuthor = new AuthorDto(
-                99L,
-                "Non existing Author",
-                "nationality",
-                "biographyEs",
-                "biographyEn",
-                1970,
-                null,
-                "non-existing-author"
-        );
-        BookDto bookDtoWithNonExistingAuthor = new BookDto(
-                null,
-                "9999999999999",
-                "Book Title ES",
-                "Book Title EN",
-                "Book Synopsis ES",
-                "Book Synopsis EN",
-                new BigDecimal("19.99"),
-                10.0,
-                null,
-                "http://example.com/bookcover.jpg",
-                LocalDate.of(2024, 1, 1),
-                publisherDtos.getFirst(),
-                List.of(authorDtos.getFirst(), nonExistingAuthor)
-        );
 
-        when(bookRepository.findByIsbn(bookDtoWithNonExistingAuthor.isbn())).thenReturn(Optional.empty());
-        when(publisherRepository.findById(publisherDtos.getFirst().id())).thenReturn(Optional.of(publisherEntities.getFirst()));
-        when(authorRepository.findById(authorDtos.getFirst().id())).thenReturn(Optional.of(authorEntities.getFirst()));
-        when(authorRepository.findById(nonExistingAuthor.id())).thenReturn(Optional.empty());
+        BookDto newBookDto = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
+                .withSeed(80)
+                .ignore(field(BookDto::id))
+                .ignore(field(BookDto::price))
+                .lenient()
+                .create();
+        PublisherEntity publisherEntity = Instancio.of(InstancioModel.PUBLISHER_ENTITY_MODEL)
+                .withSeed(80)
+                .create();
 
-        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.create(bookDtoWithNonExistingAuthor));
+        when(bookRepository.findByIsbn(any())).thenReturn(Optional.empty());
+        when(publisherRepository.findById(any())).thenReturn(Optional.of(publisherEntity));
+        when(authorRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.create(newBookDto));
     }
 
 
     @Test
     @DisplayName("updateBook should update an existing book")
     void updateBook_ShouldUpdateExistingBook() {
-        BookDto existingBookDto = bookDtos.getFirst();
-        BookEntity existingBookEntity = bookEntities.getFirst();
-        BookEntity updatedBookEntity = new BookEntity(
-                existingBookEntity.id(),
-                existingBookEntity.isbn(),
-                "Updated Title ES",
-                "Updated Title EN",
-                "Updated Synopsis ES",
-                "Updated Synopsis EN",
-                new BigDecimal("39.99"),
-                5.0,
-                existingBookEntity.cover(),
-                existingBookEntity.publicationDate(),
-                existingBookEntity.publisher(),
-                existingBookEntity.authors()
-        );
-        BookDto expectedUpdatedBookDto = new BookDto(
-                existingBookDto.id(),
-                existingBookDto.isbn(),
-                "Updated Title ES",
-                "Updated Title EN",
-                "Updated Synopsis ES",
-                "Updated Synopsis EN",
-                new BigDecimal("39.99"),
-                5.0,
-                null,
-                existingBookDto.cover(),
-                existingBookDto.publicationDate(),
-                existingBookDto.publisher(),
-                existingBookDto.authors()
-        );
 
-        when(bookRepository.findById(existingBookDto.id())).thenReturn(Optional.of(existingBookEntity));
+        BookEntity existingBookEntity = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
+                .withSeed(90)
+                .ignore(field(BookEntity::publisher))
+                .ignore(field(BookEntity::authors))
+                .lenient()
+                .create();
+        BookDto bookDtoToUpdate = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
+                .withSeed(90)
+                .ignore(field(BookDto::price))
+                .ignore(field(BookDto::publisher))
+                .ignore(field(BookDto::authors))
+                .set(field(BookDto::titleEs), "Updated Title ES")
+                .lenient()
+                .create();
+        BookEntity updatedBookEntity = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
+                .withSeed(90)
+                .ignore(field(BookEntity::publisher))
+                .ignore(field(BookEntity::authors))
+                .set(field(BookEntity::titleEs), "Updated Title ES")
+                .lenient()
+                .create();
+
+        when(bookRepository.findById(any())).thenReturn(Optional.of(existingBookEntity));
+        when(bookRepository.findByIsbn(anyString())).thenReturn(Optional.of(existingBookEntity));
+
         when(bookRepository.save(updatedBookEntity)).thenReturn(updatedBookEntity);
-        when(publisherRepository.findById(existingBookDto.publisher().id())).thenReturn(Optional.of(publisherEntities.getFirst()));
-        when(authorRepository.findById(existingBookDto.authors().get(0).id())).thenReturn(Optional.of(authorEntities.getFirst()));
-        if (existingBookDto.authors().size() > 1) {
-            when(authorRepository.findById(existingBookDto.authors().get(1).id())).thenReturn(Optional.of(authorEntities.get(1)));
-        }
-        BookDto result = bookServiceImpl.update(expectedUpdatedBookDto);
+
+        BookDto result = bookServiceImpl.update(bookDtoToUpdate);
         assertAll(
                 () -> assertNotNull(result, "Result should not be null"),
-                () -> assertEquals(expectedUpdatedBookDto.id(), result.id(), "ID should match"),
-                () -> assertEquals(expectedUpdatedBookDto.titleEs(), result.titleEs(), "Title should be updated")
+                () -> assertEquals(bookDtoToUpdate.id(), result.id(), "ID should match"),
+                () -> assertEquals(bookDtoToUpdate.isbn(), result.isbn(), "ISBN should match"),
+                () -> assertEquals(bookDtoToUpdate.titleEs(), result.titleEs(), "Title should match")
         );
     }
 
     @Test
     @DisplayName("updateBook should throw exception when book does not exist")
     void updateBook_ShouldThrowException_WhenBookDoesNotExist() {
-        BookDto nonExistingBookDto = new BookDto(
-                99L,
-                "9999999999999",
-                "Non-existing Book Title ES",
-                "Non-existing Book Title EN",
-                "Non-existing Book Synopsis ES",
-                "Non-existing Book Synopsis EN",
-                new BigDecimal("29.99"),
-                0.0,
-                null,
-                "http://example.com/nonexistingbookcover.jpg",
-                LocalDate.of(2024, 1, 1),
-                publisherDtos.getFirst(),
-                List.of(authorDtos.getFirst())
-        );
-        when(bookRepository.findById(nonExistingBookDto.id())).thenReturn(Optional.empty());
+        BookDto nonExistingBookDto = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
+                .withSeed(100)
+                .ignore(field(BookDto::price))
+                .lenient()
+                .create();
+        when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.update(nonExistingBookDto));
     }
 
     @Test
     @DisplayName("updateBook should throw exception when updating to an existing ISBN")
     void updateBook_ShouldThrowException_WhenUpdatingToExistingIsbn() {
-        BookDto existingBookDto = bookDtos.getFirst();
-        BookEntity existingBookEntity = bookEntities.getFirst();
-        BookEntity anotherExistingBookEntity = bookEntities.get(1);
-        BookDto bookDtoWithExistingIsbn = new BookDto(
-                existingBookDto.id(),
-                anotherExistingBookEntity.isbn(), // ISBN of another existing book
-                "Updated Title ES",
-                "Updated Title EN",
-                "Updated Synopsis ES",
-                "Updated Synopsis EN",
-                new BigDecimal("39.99"),
-                5.0,
-                null,
-                existingBookDto.cover(),
-                existingBookDto.publicationDate(),
-                existingBookDto.publisher(),
-                existingBookDto.authors()
-        );
-
-        when(bookRepository.findById(existingBookDto.id())).thenReturn(Optional.of(existingBookEntity));
-        when(bookRepository.findByIsbn(anotherExistingBookEntity.isbn())).thenReturn(Optional.of(anotherExistingBookEntity));
-        assertThrows(BusinessException.class, () -> bookServiceImpl.update(bookDtoWithExistingIsbn));
-    }*/
+        BookDto bookDtoToUpdate = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
+                .withSeed(110)
+                .ignore(field(BookDto::price))
+                .lenient()
+                .create();
+        BookEntity existingBookEntity = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
+                .withSeed(110)
+                .create();
+        BookEntity anotherExistingBookEntity = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
+                .withSeed(111)
+                .create();
+        when(bookRepository.findById(bookDtoToUpdate.id())).thenReturn(Optional.of(existingBookEntity));
+        when(bookRepository.findByIsbn(bookDtoToUpdate.isbn())).thenReturn(Optional.of(anotherExistingBookEntity));
+        assertThrows(BusinessException.class, () -> bookServiceImpl.update(bookDtoToUpdate));
+    }
 
 
 }
