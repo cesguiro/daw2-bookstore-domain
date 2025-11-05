@@ -107,9 +107,8 @@ class BookServiceImplTest {
     @Test
     @DisplayName("getByIsbn should throw exception when book does not exist")
     void getByIsbn_ShouldThrowException_WhenBookDoesNotExist() {
-        String isbn = "non-existing-isbn";
-        when(bookRepository.findByIsbn(isbn)).thenReturn(java.util.Optional.empty());
-        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.getByIsbn(isbn));
+        when(bookRepository.findByIsbn(anyString())).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.getByIsbn("non-existing-isbn"));
     }
 
 
