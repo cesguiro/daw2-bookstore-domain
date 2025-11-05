@@ -8,9 +8,7 @@ import es.cesguiro.domain.repository.BookRepository;
 import es.cesguiro.domain.repository.PublisherRepository;
 import es.cesguiro.domain.repository.entity.BookEntity;
 import es.cesguiro.domain.repository.entity.PublisherEntity;
-import es.cesguiro.domain.service.dto.AuthorDto;
 import es.cesguiro.domain.service.dto.BookDto;
-import es.cesguiro.domain.service.dto.PublisherDto;
 import es.cesguiro.util.InstancioModel;
 import org.instancio.Instancio;
 import static org.instancio.Select.field;
@@ -24,7 +22,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -333,7 +330,7 @@ class BookServiceImplTest {
         when(bookRepository.findById(any())).thenReturn(Optional.of(existingBookEntity));
         when(bookRepository.findByIsbn(anyString())).thenReturn(Optional.of(existingBookEntity));
 
-        when(bookRepository.save(updatedBookEntity)).thenReturn(updatedBookEntity);
+        when(bookRepository.save(any())).thenReturn(updatedBookEntity);
 
         BookDto result = bookServiceImpl.update(bookDtoToUpdate);
         assertAll(
@@ -370,8 +367,8 @@ class BookServiceImplTest {
         BookEntity anotherExistingBookEntity = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
                 .withSeed(111)
                 .create();
-        when(bookRepository.findById(bookDtoToUpdate.id())).thenReturn(Optional.of(existingBookEntity));
-        when(bookRepository.findByIsbn(bookDtoToUpdate.isbn())).thenReturn(Optional.of(anotherExistingBookEntity));
+        when(bookRepository.findById(anyLong())).thenReturn(Optional.of(existingBookEntity));
+        when(bookRepository.findByIsbn(anyString())).thenReturn(Optional.of(anotherExistingBookEntity));
         assertThrows(BusinessException.class, () -> bookServiceImpl.update(bookDtoToUpdate));
     }
 

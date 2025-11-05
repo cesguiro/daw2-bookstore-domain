@@ -60,6 +60,7 @@ public class InstancioModel {
 
     public static final Model<BookEntity> BOOK_ENTITY_MODEL = Instancio.of(BookEntity.class)
             .generate(field(BookEntity::isbn), gen -> gen.text().pattern(ISBN_PATTERN))
+            .generate(field(BookEntity::basePrice), gen -> gen.math().bigDecimal().range(new BigDecimal("1.00"), new BigDecimal("500.00")))
             .generate(field(BookEntity::discountPercentage), gen -> gen.math().bigDecimal().range(new BigDecimal("0.00"), new BigDecimal("100.00")))
             .generate(field(BookEntity::publicationDate), gen -> gen.temporal().localDate().past())
             .setModel(field(BookEntity::publisher), PUBLISHER_ENTITY_MODEL)
@@ -67,6 +68,7 @@ public class InstancioModel {
             .toModel();
     public static final Model<Book> BOOK_MODEL = Instancio.of(Book.class)
             .generate(field(Book::getIsbn), gen -> gen.text().pattern(ISBN_PATTERN))
+            .generate(field(Book::getBasePrice), gen -> gen.math().bigDecimal().range(new BigDecimal("1.00"), new BigDecimal("500.00")))
             .generate(field(Book::getDiscountPercentage), gen -> gen.math().bigDecimal().range(new BigDecimal("0.00"), new BigDecimal("100.00")))
             .generate(field(Book::getPublicationDate), gen -> gen.temporal().localDate().past())
             .setModel(field(Book::getPublisher), PUBLISHER_MODEL)
@@ -74,6 +76,7 @@ public class InstancioModel {
             .toModel();
     public static final Model<BookDto> BOOK_DTO_MODEL = Instancio.of(BookDto.class)
             .generate(field(BookDto::isbn), gen -> gen.text().pattern(ISBN_PATTERN))
+            .generate(field(BookDto::basePrice), gen -> gen.math().bigDecimal().range(new BigDecimal("1.00"), new BigDecimal("500.00")))
             .generate(field(BookDto::discountPercentage), gen -> gen.math().bigDecimal().range(new BigDecimal("0.00"), new BigDecimal("100.00")))
             .generate(field(BookDto::publicationDate), gen -> gen.temporal().localDate().past())
             .setModel(field(BookDto::publisher), PUBLISHER_DTO_MODEL)
