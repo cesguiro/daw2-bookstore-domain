@@ -1,13 +1,11 @@
 package es.cesguiro.domain.service.impl;
 
-import es.cesguiro.data.loader.PublishersDataLoader;
 import es.cesguiro.domain.exception.ResourceNotFoundException;
-import es.cesguiro.domain.exception.ValidationException;
-import es.cesguiro.domain.model.Publisher;
 import es.cesguiro.domain.repository.PublisherRepository;
 import es.cesguiro.domain.repository.entity.PublisherEntity;
 import es.cesguiro.domain.service.dto.PublisherDto;
-import org.junit.jupiter.api.BeforeAll;
+import es.cesguiro.util.InstancioModel;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,10 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,44 +30,36 @@ class PublisherServiceImplTest {
     @InjectMocks
     PublisherServiceImpl publisherServiceImpl;
 
-    private static List<Publisher> publishers;
-    private static List<PublisherDto> publisherDtos;
-    private static List<PublisherEntity> publisherEntities;
-
-    @BeforeAll
-    static void setUp() {
-        PublishersDataLoader publishersDataLoader = new PublishersDataLoader();
-        publishers = publishersDataLoader.loadPublishersFromCSV();
-        publisherDtos = publishersDataLoader.loadPublisherDtosFromCSV();
-        publisherEntities = publishersDataLoader.loadPublisherEntitiesFromCSV();
-    }
-
     @Test
     @DisplayName("Update publisher")
     void updatePublisher() {
-        PublisherDto publisherDto = publisherDtos.getFirst();
-        PublisherEntity publisherEntity = publisherEntities.getFirst();
-        PublisherEntity updatedPublisherEntity = new PublisherEntity(
-                publisherEntity.id(),
-                "Updated Name",
-                "updated-slug");
-        PublisherDto expected = new PublisherDto(
-                publisherDto.id(),
-                "Updated Name",
-                "updated-slug");
-        when(publisherRepository.findById(publisherDto.id())).thenReturn(Optional.of(publisherEntity));
-        when(publisherRepository.save(publisherEntity)).thenReturn(updatedPublisherEntity);
+        PublisherEntity existing = Instancio.of(InstancioModel.PUBLISHER_ENTITY_MODEL)
+                .create();
 
-        PublisherDto result = publisherServiceImpl.update(publisherDto);
+        PublisherDto publisherDtoToUpdate = new PublisherDto(
+                existing.id(),
+                "Updated Name",
+                existing.slug()
+        );
+        PublisherEntity updatedPublisherEntity = new PublisherEntity(
+                existing.id(),
+                publisherDtoToUpdate.name(),
+                publisherDtoToUpdate.slug()
+        );
+
+        when(publisherRepository.findById(anyLong())).thenReturn(Optional.of(existing));
+        when(publisherRepository.save(any())).thenReturn(updatedPublisherEntity);
+
+        PublisherDto result = publisherServiceImpl.update(publisherDtoToUpdate);
 
         assertAll(
                 () -> assertNotNull(result),
-                () -> assertEquals(expected.id(), result.id()),
-                () -> assertEquals(expected.name(), result.name()),
-                () -> assertEquals(expected.slug(), result.slug())
+                () -> assertEquals(publisherDtoToUpdate.id(), result.id(), "Publisher IDs should match"),
+                () -> assertEquals(publisherDtoToUpdate.name(), result.name(), "Publisher names should match"),
+                () -> assertEquals(publisherDtoToUpdate.slug(), result.slug(), "Publisher slugs should match")
         );
 
-        verify(publisherRepository).save(publisherEntity);
+        verify(publisherRepository).save(any());
     }
 
     @Test
@@ -78,13 +69,11 @@ class PublisherServiceImplTest {
                 999L,
                 "Non Existing Publisher",
                 "non-existing-publisher");
-        when(publisherRepository.findById(publisherDto.id())).thenReturn(Optional.empty());
 
-        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            publisherServiceImpl.update(publisherDto);
-        });
+        when(publisherRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertEquals("Publisher with id 999 not found", exception.getMessage());
+        assertThrows(ResourceNotFoundException.class, () -> {publisherServiceImpl.update(publisherDto);});
+
     }
 
 

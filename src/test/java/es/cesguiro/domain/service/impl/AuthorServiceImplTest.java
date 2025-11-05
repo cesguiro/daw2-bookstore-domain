@@ -4,6 +4,8 @@ import es.cesguiro.domain.exception.BusinessException;
 import es.cesguiro.domain.repository.AuthorRepository;
 import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.service.dto.AuthorDto;
+import es.cesguiro.util.InstancioModel;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,19 +34,17 @@ class AuthorServiceImplTest {
     @DisplayName("create should return created AuthorDto")
     void create_ShouldReturnCreatedAuthorDto() {
         // Arrange
-        AuthorDto authorDto = new AuthorDto(
-                null,
-                "author1",
-                "nationality1",
-                "BioEs",
-                "BioEn",
-                1970,
-                null,
-                "slug1"
-        );
+        AuthorDto authorDto = Instancio.of(InstancioModel.AUTHOR_DTO_MODEL)
+                .withSeed(123)
+                .create();
+
+        AuthorEntity authorEntityCreated = Instancio.of(InstancioModel.AUTHOR_ENTITY_MODEL)
+                .withSeed(123)
+                .create();
 
         // Mock repository behavior
-        when(authorRepository.save(Mockito.any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(authorRepository.save(any())).thenReturn(authorEntityCreated);
+        when(authorRepository.findBySlug(any())).thenReturn(Optional.empty());
 
         // Act
         AuthorDto createdAuthorDto = authorServiceImpl.create(authorDto);
@@ -62,29 +63,15 @@ class AuthorServiceImplTest {
     @DisplayName("create should throw BusinessException when slug already exists")
     void create_ShouldThrowBusinessException_WhenSlugAlreadyExists() {
         // Arrange
-        AuthorDto authorDto = new AuthorDto(
-                null,
-                "author1",
-                "nationality1",
-                "BioEs",
-                "BioEn",
-                1970,
-                null,
-                "existing-slug"
-        );
-        AuthorEntity existingAuthor = new AuthorEntity(
-                1L,
-                "author1",
-                "nationality1",
-                "BioEs",
-                "BioEn",
-                1970,
-                null,
-                "existing-slug"
-        );
+        AuthorDto authorDto = Instancio.of(InstancioModel.AUTHOR_DTO_MODEL)
+                .withSeed(123)
+                .create();
+        AuthorEntity existingAuthor = Instancio.of(InstancioModel.AUTHOR_ENTITY_MODEL)
+                .withSeed(456)
+                .create();
 
         // Mock repository behavior to simulate existing slug
-        when(authorRepository.findBySlug("existing-slug")).thenReturn(Optional.of(existingAuthor));
+        when(authorRepository.findBySlug(any())).thenReturn(Optional.of(existingAuthor));
 
         // Act & Assert
         assertThrows(BusinessException.class, () -> {authorServiceImpl.create(authorDto);});
