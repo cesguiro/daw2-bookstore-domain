@@ -140,7 +140,7 @@ public class BookServiceImpl implements BookService {
         Optional<BookDto> existingBookDto = findByIsbn(isbn);
 
         if (existingBookDto.isEmpty()) {
-            throw new BusinessException("Book with isbn " + isbn + " does not exist");
+            throw new ResourceNotFoundException("Book with isbn " + isbn + " does not exist");
         }
 
         bookRepository.deleteByIsbn(isbn);
