@@ -63,7 +63,6 @@ class AuthorMapperShould {
     @Test
     void return_null_when_model_to_map_is_null() {
         assertThat(AuthorMapper.getInstance().fromAuthorEntityToAuthor(null)).isNull();
-        assertThat(AuthorMapper.getInstance().fromAuthorEntityToAuthor(null)).isNull();
         assertThat(AuthorMapper.getInstance().fromAuthorToAuthorEntity(null)).isNull();
         assertThat(AuthorMapper.getInstance().fromAuthorToAuthorDto(null)).isNull();
         assertThat(AuthorMapper.getInstance().fromAuthorDtoToAuthor(null)).isNull();
