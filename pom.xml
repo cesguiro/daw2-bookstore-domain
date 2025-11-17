@@ -38,16 +38,15 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.junit.version>5.10.3</org.junit.version>
-        <org.mockito.version>5.12.0</org.mockito.version>
         <org.apache.maven.surefire.plugin.version>3.5.2</org.apache.maven.surefire.plugin.version>
         <org.apache.maven.compiler.plugin.version>3.14.0</org.apache.maven.compiler.plugin.version>
-        <org.apache.commons.csv.version>1.13.0</org.apache.commons.csv.version>
         <jakarta.validation.version>3.1.1</jakarta.validation.version>
-        <org.hibernate.validator>9.0.1.Final</org.hibernate.validator>
         <jakarta.transaction.version>2.0.1</jakarta.transaction.version>
         <spring.boot.validation.version>3.5.6</spring.boot.validation.version>
         <org.instancio.version>5.5.1</org.instancio.version>
+
+        <org.mockito.version>5.20.0</org.mockito.version>
+        <org.assertj.version>3.27.6</org.assertj.version>
     </properties>
 
     <dependencies>
@@ -85,7 +84,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>${org.junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -95,18 +93,31 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-csv</artifactId>
-            <version>${org.apache.commons.csv.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-junit</artifactId>
             <version>${org.instancio.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${org.assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
+    <!-- Asegurar versiones consistentes de dependencias de JUnit 5 -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.13.4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
