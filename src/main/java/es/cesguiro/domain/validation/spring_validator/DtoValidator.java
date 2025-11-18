@@ -7,17 +7,27 @@ import java.util.Set;
 
 public class DtoValidator {
 
-    private static final Validator validator;
+    private static Validator validator;
 
-    static {
+    /*static {
         ValidatorFactory factory = Validation.byDefaultProvider()
                 .configure()
                 .buildValidatorFactory();
         validator = factory.getValidator();
+    }*/
+
+    private static Validator getValidator() {
+        if (validator == null) {
+            ValidatorFactory factory = Validation.byDefaultProvider()
+                    .configure()
+                    .buildValidatorFactory();
+            validator = factory.getValidator();
+        }
+        return validator;
     }
 
     public static <T> void validate(T dto) {
-        Set<ConstraintViolation<T>> violations = validator.validate(dto);
+        Set<ConstraintViolation<T>> violations = getValidator().validate(dto);
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
