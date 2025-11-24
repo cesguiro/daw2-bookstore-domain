@@ -8,7 +8,6 @@ import java.util.List;
 
 public record BookDto(
         Long id,
-        //@NotNull
         @NotNull(message = "ISBN es obligatorio")
         @Pattern(regexp = "\\d{13}", message = "ISBN debe tener 13 dígitos")
         String isbn,
