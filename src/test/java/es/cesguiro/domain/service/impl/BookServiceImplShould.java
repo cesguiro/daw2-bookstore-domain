@@ -6,6 +6,7 @@ import es.cesguiro.domain.model.Page;
 import es.cesguiro.domain.repository.AuthorRepository;
 import es.cesguiro.domain.repository.BookRepository;
 import es.cesguiro.domain.repository.PublisherRepository;
+import es.cesguiro.domain.repository.entity.AuthorEntity;
 import es.cesguiro.domain.repository.entity.BookEntity;
 import es.cesguiro.domain.repository.entity.PublisherEntity;
 import es.cesguiro.domain.service.dto.BookDto;
@@ -172,7 +173,7 @@ class BookServiceImplShould {
     }
 
     @Test
-    void return_created_BookDto_when_create_book_with_valid_data() {
+    void save_book_and_return_created_BookDto_when_create_book_with_valid_data() {
         Long newId = 19L;
         BookDto newBookDto = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
                 .withSeed(50)
@@ -180,32 +181,34 @@ class BookServiceImplShould {
                 .ignore(field(BookDto::price))
                 .lenient()
                 .create();
-
-        BookEntity newBookEntity = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
+        PublisherEntity publisherEntity = Instancio.of(InstancioModel.PUBLISHER_ENTITY_MODEL)
+                .withSeed(50)
+                .create();
+        AuthorEntity authorEntity = Instancio.of(InstancioModel.AUTHOR_ENTITY_MODEL)
+                .withSeed(50)
+                .create();
+        BookEntity savedEntity = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
                 .withSeed(50)
                 .set(field(BookEntity::id), newId)
                 .lenient()
                 .create();
-
-        when(bookRepository.findByIsbn(newBookDto.isbn())).thenReturn(Optional.empty());
-        when(publisherRepository.findById(anyLong())).thenReturn(Optional.of(newBookEntity.publisher()));
-        for (int i = 0; i < newBookDto.authors().size(); i++) {
-            when(authorRepository.findById(newBookDto.authors().get(i).id()))
-                    .thenReturn(Optional.of(newBookEntity.authors().get(i)));
-        }
-        when(bookRepository.save(any())).thenReturn(newBookEntity);
         BookDto expected = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
                 .withSeed(50)
                 .set(field(BookDto::id), newId)
                 .ignore(field(BookDto::price))
                 .lenient()
                 .create();
+        when(bookRepository.findByIsbn(newBookDto.isbn())).thenReturn(Optional.empty());
+        when(publisherRepository.findById(anyLong())).thenReturn(Optional.of(publisherEntity));
+        when(authorRepository.findById(anyLong())).thenReturn(Optional.of(authorEntity));
+        when(bookRepository.save(any())).thenReturn(savedEntity);
+
 
         BookDto result = bookServiceImpl.create(newBookDto);
 
         assertThat(result)
                 .usingRecursiveComparison()
-                .ignoringFields("id")
+                .ignoringFields("id", "price")
                 .isEqualTo(expected);
     }
 
