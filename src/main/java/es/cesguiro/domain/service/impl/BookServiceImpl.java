@@ -37,19 +37,22 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<BookDto> getAll(int page, int size) {
-            Page<BookEntity> bookEntityPage =  bookRepository
-                    .findAll(page, size);
-            List<BookDto> itemsDto = bookEntityPage.data()
-                    .stream()
-                    .map(BookMapper.getInstance()::fromBookEntityToBook)
-                    .map(BookMapper.getInstance()::fromBookToBookDto)
-                    .toList();
-            return new Page<>(
-                    itemsDto,
-                    bookEntityPage.pageNumber(),
-                    bookEntityPage.pageSize(),
-                    bookEntityPage.totalElements()
-            );
+        if(page < 1 || size < 1) {
+            throw new IllegalArgumentException("Page and size must be greater than 0");
+        }
+        Page<BookEntity> bookEntityPage =  bookRepository
+                .findAll(page, size);
+        List<BookDto> itemsDto = bookEntityPage.data()
+                .stream()
+                .map(BookMapper.getInstance()::fromBookEntityToBook)
+                .map(BookMapper.getInstance()::fromBookToBookDto)
+                .toList();
+        return new Page<>(
+                itemsDto,
+                bookEntityPage.pageNumber(),
+                bookEntityPage.pageSize(),
+                bookEntityPage.totalElements()
+        );
     }
 
     @Override

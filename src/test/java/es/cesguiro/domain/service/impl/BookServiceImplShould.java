@@ -11,12 +11,16 @@ import es.cesguiro.domain.repository.entity.PublisherEntity;
 import es.cesguiro.domain.service.dto.BookDto;
 import es.cesguiro.util.InstancioModel;
 import org.instancio.Instancio;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,7 +35,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BookServiceImplTest {
+class BookServiceImplShould {
 
     @Mock
     private BookRepository bookRepository;
@@ -46,76 +50,99 @@ class BookServiceImplTest {
     private BookServiceImpl bookServiceImpl;
 
 
-    static Stream<Arguments> provideFindAllArguments() {
-        return Stream.of(
-                Arguments.of(1, 5, 2L,
-                        Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL).size(2).withSeed(10).create(),
-                        new Page<>(Instancio.ofList(InstancioModel.BOOK_DTO_MODEL).size(2).withSeed(10).ignore(field(BookDto::price)).lenient().create(), 1, 5, 2)),
-                Arguments.of(1, 10, 2L,
-                        Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL).size(2).withSeed(20).create(),
-                        new Page<>(Instancio.ofList(InstancioModel.BOOK_DTO_MODEL).size(2).withSeed(20).ignore(field(BookDto::price)).lenient().create(), 1, 10, 2)),
-                Arguments.of(1, 3, 3L,
-                        Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL).size(3).withSeed(30).create(),
-                        new Page<>(Instancio.ofList(InstancioModel.BOOK_DTO_MODEL).size(3).withSeed(30).ignore(field(BookDto::price)).lenient().create(), 1, 3, 3)),
-                Arguments.of(1, 3, 9L,
-                        Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL).size(3).withSeed(40).create(),
-                        new Page<>(Instancio.ofList(InstancioModel.BOOK_DTO_MODEL).size(3).withSeed(40).ignore(field(BookDto::price)).lenient().create(), 1, 3, 9)),
-                Arguments.of(2, 3, 5L,
-                        Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL).size(3).withSeed(50).create(),
-                        new Page<>(Instancio.ofList(InstancioModel.BOOK_DTO_MODEL).size(3).withSeed(50).ignore(field(BookDto::price)).lenient().create(), 2, 3, 5))
-        );
-    }
-
     @ParameterizedTest
-    @DisplayName("getAll should return list of books")
-    @MethodSource("provideFindAllArguments")
-    void getAll_ShouldReturnListOfBooks(int page, int size, long count, List<BookEntity> bookEntities, Page<BookDto> expected) {
-        when(bookRepository.findAll(page, size)).thenReturn(new Page<>(bookEntities, page, size, count));
+    @CsvSource({
+            "1, 2, 2, 5",
+            "1, 5, 5, 5",
+            "1, 5, 3, 3",
+            "2, 4, 4, 10",
+            "2, 4, 4, 4",
+            "2, 4, 3, 3"
+    })
+    void return_page_of_BookDto_when_getAll_is_called_with_valid_arguments(int page, int size, int elementsToCreate, long totalElements) {
+        List<BookEntity> bookEntities = Instancio.ofList(InstancioModel.BOOK_ENTITY_MODEL)
+                .size(elementsToCreate)
+                .withSeed(10)
+                .create();
+        List<BookDto> expectedBookDtos = Instancio.ofList(InstancioModel.BOOK_DTO_MODEL)
+                .size(elementsToCreate)
+                .withSeed(10)
+                .ignore(field(BookDto::price))
+                .lenient()
+                .create();
+
+        when(bookRepository.findAll(page, size)).thenReturn(new Page<>(bookEntities, page, size, totalElements));
+        Page<BookDto> expected = new Page<>(expectedBookDtos, page, size, totalElements);
+
         Page<BookDto> result = bookServiceImpl.getAll(page, size);
 
-        assertAll(
-                () -> assertEquals(expected.data().size(), result.data().size(), "Number of books should match"),
-                () -> assertEquals(expected.pageNumber(), result.pageNumber(), "Page number should match"),
-                () -> assertEquals(expected.pageSize(), result.pageSize(), "Page size should match"),
-                () -> assertEquals(expected.totalElements(), result.totalElements(), "Total items should match"),
-                () -> assertEquals(expected.data().getFirst().isbn(), result.data().getFirst().isbn(), "First book ISBN should match"),
-                () -> assertEquals(expected.data().getLast().isbn(), result.data().getLast().isbn(), "Last book ISBN should match")
-        );
+        assertThat(result)
+                .usingRecursiveComparison()
+                .ignoringFields("data.price")
+                .isEqualTo(expected);
     }
 
     @Test
-    @DisplayName("getByIsbn should return book when it exists")
-    void getByIsbn_ShouldReturnBook_WhenItExists() {
+    void return_empty_page_when_getAll_finds_no_books() {
+        when(bookRepository.findAll(anyInt(), anyInt())).thenReturn(new Page<>(List.of(), 1, 10, 0));
+
+        Page<BookDto> result = bookServiceImpl.getAll(1, 10);
+
+        assertThat(result.data()).isEmpty();
+        assertThat(result.totalElements()).isZero();
+        assertThat(result.totalPages()).isZero();
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "0, 10",
+            "-1, 10",
+    })
+    void throw_IllegalArgumentException_when_getAll_receives_invalid_page(int page, int size) {
+        assertThatThrownBy(() -> bookServiceImpl.getAll(page, size))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1, 0",
+            "1, -5",
+    })
+    void throw_IllegalArgumentException_when_getAll_receives_invalid_size(int page, int size) {
+        assertThatThrownBy(() -> bookServiceImpl.getAll(page, size))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void return_BookDto_when_getByIsbn_finds_a_book() {
         BookEntity bookEntity = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL).withSeed(10).create();
         when(bookRepository.findByIsbn(anyString())).thenReturn(Optional.of(bookEntity));
-        BookDto result = bookServiceImpl.getByIsbn(bookEntity.isbn());
         BookDto expected = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
                 .withSeed(10)
                 .ignore(field(BookDto::price))
                 .lenient()
                 .create();
-        assertAll(
-                () -> assertNotNull(result, "Result should not be null"),
-                () -> assertEquals(expected.isbn(), result.isbn(), "ISBN should match"),
-                () -> assertEquals(expected.titleEs(), result.titleEs(), "Title should match"),
-                () -> assertEquals(expected.publisher().id(), result.publisher().id(), "Publisher ID should match"),
-                () -> assertEquals(expected.authors().size(), result.authors().size(), "Number of authors should match")
-        );
+
+        BookDto result = bookServiceImpl.getByIsbn(bookEntity.isbn());
+
+        assertThat(result)
+                .usingRecursiveComparison()
+                .ignoringFields("price")
+                .isEqualTo(expected);
     }
 
     // test getByIsbn when book does not exist
     @Test
-    @DisplayName("getByIsbn should throw exception when book does not exist")
-    void getByIsbn_ShouldThrowException_WhenBookDoesNotExist() {
+    void throw_ResourceNotFoundException_when_getByIsbn_finds_no_book() {
         when(bookRepository.findByIsbn(anyString())).thenReturn(Optional.empty());
-        assertThrows(ResourceNotFoundException.class, () -> bookServiceImpl.getByIsbn("non-existing-isbn"));
+        assertThatThrownBy(() -> bookServiceImpl.getByIsbn("non-existing-isbn"))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
 
     // test findByIsbn when book exists
     @Test
-    @DisplayName("findByIsbn should return book when it exists")
-    void findByIsbn_ShouldReturnBook_WhenItExists() {
+    void return_Optional_of_BookDto_when_findByIsbn_finds_a_book() {
         BookEntity bookEntity = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL).withSeed(20).create();
         when(bookRepository.findByIsbn(anyString())).thenReturn(java.util.Optional.of(bookEntity));
         BookDto expected = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
@@ -125,80 +152,27 @@ class BookServiceImplTest {
                 .create();
 
         Optional<BookDto> result = bookServiceImpl.findByIsbn("some-isbn");
-        assertAll(
-                () -> assertTrue(result.isPresent(), "Result should be present"),
-                () -> assertEquals(expected.isbn(), result.get().isbn(), "ISBN should match"),
-                () -> assertEquals(expected.titleEs(), result.get().titleEs(), "Title should match"),
-                () -> assertEquals(expected.publisher().id(), result.get().publisher().id(), "Publisher ID should match"),
-                () -> assertEquals(expected.authors().size(), result.get().authors().size(), "Number of authors should match")
-        );
+
+        assertThat(result)
+                .isPresent()
+                .get()
+                .usingRecursiveComparison()
+                .ignoringFields("price")
+                .isEqualTo(expected);
     }
 
-    // test findByIsbn when book does not exist
     @Test
-    @DisplayName("findByIsbn should return empty when book does not exist")
-    void findByIsbn_ShouldReturnEmpty_WhenBookDoesNotExist() {
+    void return_empty_optional_when_findByIsbn_finds_no_book() {
         String isbn = "non-existing-isbn";
         when(bookRepository.findByIsbn(isbn)).thenReturn(Optional.empty());
+
         Optional<BookDto> result = bookServiceImpl.findByIsbn(isbn);
-        assertFalse(result.isPresent(), "Result should be empty");
+
+        assertThat(result).isNotPresent();
     }
 
     @Test
-    @DisplayName("findByIsbn with null publisher should return book when it exists")
-    void findByIsbn_WithNullPublisher_ShouldReturnBook_WhenItExists() {
-        BookEntity bookEntityWithNullPublisher = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
-                .ignore(field(BookEntity::publisher))
-                .lenient()
-                .withSeed(30)
-                .create();
-        BookDto expected = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
-                .ignore(field(BookDto::publisher))
-                .ignore(field(BookDto::price))
-                .lenient()
-                .withSeed(30)
-                .create();
-
-        when(bookRepository.findByIsbn(anyString())).thenReturn(Optional.of(bookEntityWithNullPublisher));
-        Optional<BookDto> result = bookServiceImpl.findByIsbn("some-isbn");
-
-        assertAll(
-                () -> assertTrue(result.isPresent(), "Result should be present"),
-                () -> assertEquals(expected.isbn(), result.get().isbn(), "ISBN should match"),
-                () -> assertEquals(expected.titleEs(), result.get().titleEs(), "Title should match"),
-                () -> assertNull(result.get().publisher(), "Publisher should be null")
-        );
-    }
-
-    @Test
-    @DisplayName("findByIsbn with null authors should return book when it exists")
-    void findByIsbn_WithNullAuthors_ShouldReturnBook_WhenItExists() {
-        BookEntity bookEntityWithNullAuthors = Instancio.of(InstancioModel.BOOK_ENTITY_MODEL)
-                .ignore(field(BookEntity::authors))
-                .lenient()
-                .withSeed(40)
-                .create();
-        BookDto expected = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
-                .ignore(field(BookDto::authors))
-                .ignore(field(BookDto::price))
-                .lenient()
-                .withSeed(40)
-                .create();
-
-        when(bookRepository.findByIsbn(anyString())).thenReturn(Optional.of(bookEntityWithNullAuthors));
-        Optional<BookDto> result = bookServiceImpl.findByIsbn("some-isbn");
-        assertAll(
-                () -> assertTrue(result.isPresent(), "Result should be present"),
-                () -> assertEquals(expected.isbn(), result.get().isbn(), "ISBN should match"),
-                () -> assertEquals(expected.titleEs(), result.get().titleEs(), "Title should match"),
-                () -> assertTrue(result.get().authors().isEmpty(), "Authors should be empty")
-        );
-    }
-
-    // test create book
-    @Test
-    @DisplayName("createBook should create a new book")
-    void createBook_ShouldCreateNewBook() {
+    void return_created_BookDto_when_create_book_with_valid_data() {
         Long newId = 19L;
         BookDto newBookDto = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
                 .withSeed(50)
@@ -220,23 +194,19 @@ class BookServiceImplTest {
                     .thenReturn(Optional.of(newBookEntity.authors().get(i)));
         }
         when(bookRepository.save(any())).thenReturn(newBookEntity);
-
         BookDto expected = Instancio.of(InstancioModel.BOOK_DTO_MODEL)
                 .withSeed(50)
                 .set(field(BookDto::id), newId)
                 .ignore(field(BookDto::price))
                 .lenient()
                 .create();
+
         BookDto result = bookServiceImpl.create(newBookDto);
 
-        assertAll(
-                () -> assertNotNull(result, "Created book should not be null"),
-                () -> assertEquals(expected.id(), result.id(), "ID should match"),
-                () -> assertEquals(expected.isbn(), result.isbn(), "ISBN should match"),
-                () -> assertEquals(expected.titleEs(), result.titleEs(), "Title should match"),
-                () -> assertEquals(expected.publisher().id(), result.publisher().id(), "Publisher ID should match"),
-                () -> assertEquals(expected.authors().size(), result.authors().size(), "Number of authors should match")
-        );
+        assertThat(result)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(expected);
     }
 
     // test create book with existing isbn
